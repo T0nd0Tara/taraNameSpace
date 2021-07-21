@@ -8,7 +8,7 @@ namespace tara {
 
 
     struct Bools {
-        char* data = new char(0x00);
+        uint8_t* data = new uint8_t(0x00);
 
         bool get_val(int index) {
             return (*data >> index) & 1;
@@ -105,8 +105,8 @@ namespace tara {
             return out;
         }
 
-        Bools(char set_vals = 0x00) {
-            data = new char(set_vals);
+        Bools(uint8_t set_vals = 0x00) {
+            data = new uint8_t(set_vals);
         }
         ~Bools() {
             /*try {

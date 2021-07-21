@@ -167,4 +167,31 @@ inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pai
 	}
 }
 
+// The Chinese Remainder Theorem - returns a value in [0,..., m1 * m2 * ... * mn)
+// DISCLAIMER: DOES NOT CHECK IF MODS ARE PAIRWISE COPRIME
+uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){
+    uint32_t N = 1;
 
+    for (uint32_t i=0; i<equations; i++){
+        N *= mods[i];
+    }
+
+    uint32_t* e = new uint32_t[equations];
+
+    for (uint32_t i=0; i<equations; i++){
+        uint32_t temp = N / mods[i];
+        e[i] = temp;
+        while (e[i] % mods[i] != 1){
+            e[i] *= temp;
+        }
+    }
+
+    uint32_t x=0;
+    for (uint32_t i=0; i<equations; i++){
+        x += equives[i]*e[i];
+    }
+
+    delete[] e;
+    return x % N;
+
+}

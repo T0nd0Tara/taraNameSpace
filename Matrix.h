@@ -21,7 +21,7 @@ namespace tara {
 
 
 		Matrix();
-		Matrix(T_*, int, int); // array, width, height
+		Matrix(int, int, T_*); // width, height, array
 		Matrix(std::vector<T_>*, int);
 		Matrix(std::vector<T_>*, int, bool);
 		Matrix(std::vector<std::pair<T_, T_>>*);
@@ -29,7 +29,9 @@ namespace tara {
 
 		Matrix(int, int, T_);
 
+		~Matrix();
 
+		Matrix<T_>* copy();
 
 		std::string to_string(uint32_t);
 
@@ -64,17 +66,52 @@ namespace tara {
 
 		// get cell through index of the array
 		const T_ get_cell(int);
+		// get cell through index of the array
+		const T_ get_cell(uint32_t);
 		// get cell through (x,y) cords
 		const T_ get_cell(int, int);
 		// get cell through (x,y) cords
+		const T_ get_cell(uint32_t, uint32_t);
+		// get cell through std::pair(x,y) cords
 		const T_ get_cell(std::pair<int,int>);
+		// get cell through std::pair(x,y) cords
+		const T_ get_cell(std::pair<uint32_t,uint32_t>);
+
+
+#ifdef TARA_PGE_EXTENSION
+		// get cell through olc::vi2d(x,y) cords
+		const T_ get_cell(olc::vi2d);
+		// get cell through olc::vu2d(x,y) cords
+		const T_ get_cell(olc::vu2d);
+#endif // TARA_PGE_EXTENSION
 
 		// set cell through index of the array
-		void set_cell(int index, T_ value);
+		void set_cell(int, T_);
+		// set cell through index of the array
+		void set_cell(uint32_t, T_);
 		// set cell through (x,y) cords
-		void set_cell(int xIndex, int yIndex, T_ value);
+		void set_cell(int, int, T_);
 		// set cell through (x,y) cords
+		void set_cell(uint32_t, uint32_t, T_);
+		// set cell through std::pair(x,y) cords
 		void set_cell(std::pair<int,int> , T_);
+		// set cell through std::pair(x,y) cords
+		void set_cell(std::pair<uint32_t, uint32_t>, T_);
+
+#ifdef TARA_PGE_EXTENSION
+		// set cell through olc::vi2d(x,y) cords
+		void set_cell(olc::vi2d, T_);
+		// set cell through olc::vu2d(x,y) cords
+		void set_cell(olc::vu2d, T_);
+#endif // TARA_PGE_EXTENSION
+
+		
+		// set array from a different Matrix
+		void set_arr(Matrix<T_>*);
+		// set array from a different array
+		void set_arr(T_*);
+		// sets every value to what you put in
+		void clear(T_);
 
 		bool ok(std::string*) const;
 
@@ -126,7 +163,7 @@ namespace tara {
 
 	// for array
 	template <typename T_>
-	Matrix<T_>::Matrix(T_* setArr, int setWidth, int setHeight) {
+	Matrix<T_>::Matrix(int setWidth, int setHeight, T_* setArr) {
 		_ok = true;
 		_Error = "";
 
@@ -300,6 +337,21 @@ namespace tara {
 			arr[i] = setVal;
 		}
 	}
+	template <typename T_>
+	Matrix<T_>::~Matrix() {
+		delete[] arr;
+	}
+
+	template <typename T_>
+	Matrix<T_>* Matrix<T_>::copy() {
+		T_* newArr = new T_[size];
+
+		for (uint32_t i = 0; i < size; i++) {
+			newArr[i] = arr[i];
+		}
+
+		return new Matrix<T_>(width, height, newArr);
+	}
 
 	template <typename T_>
 	std::string Matrix<T_>::to_string(uint32_t spaces) {
@@ -456,16 +508,35 @@ namespace tara {
 				i -= size;
 			} while (i >= size);
 		}
+		
+		return arr[i];
+	}
+
+	template <typename T_>
+	const const T_ Matrix<T_>::get_cell(uint32_t i) {
 		if (i >= size) {
-			// Error
-			/*this->_Error += "Cannot access an indexed cell i when i >= Matrix::size.\n";
-			this->_ok = false;*/
+			do {
+				i -= size;
+			} while (i >= size);
 		}
+
 		return arr[i];
 	}
 
 	template <typename T_>
 	const T_ Matrix<T_>::get_cell(int x, int y) {
+		if (x + y * width >= size) {
+			// Error
+			this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
+			this->_ok = false;
+			return arr[size - 1];
+		}
+		return arr[x + y * width];
+	}
+
+
+	template <typename T_>
+	const T_ Matrix<T_>::get_cell(uint32_t x, uint32_t y) {
 		if (x + y * width >= size) {
 			// Error
 			this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
@@ -481,13 +552,40 @@ namespace tara {
 	}
 
 	template <typename T_>
+	const T_ Matrix<T_>::get_cell(std::pair<uint32_t, uint32_t> cords) {
+		return get_cell(cords.first, cords.second);
+	}
+
+#ifdef TARA_PGE_EXTENSION
+	template <typename T_>
+	const T_ Matrix<T_>::get_cell(olc::vi2d cords) {
+		return get_cell(cords.x, cords.y);
+	}
+
+	template <typename T_>
+	const T_ Matrix<T_>::get_cell(olc::vu2d cords) {
+		return get_cell(cords.x, cords.y);
+	}
+#endif // TARA_PGE_EXTENSION
+
+	template <typename T_>
 	void Matrix<T_>::set_cell(int i, T_ val) {
 		if (i < 0) {
 			do {
 				i += size;
 			} while (i < 0);
 		}
-		else if (i>=size){
+		else if (i >= size) {
+			do {
+				i -= size;
+			} while (i >= size);
+		}
+		arr[i] = val;
+	}
+
+	template <typename T_>
+	void Matrix<T_>::set_cell(uint32_t i, T_ val) {
+		if (i >= size) {
 			do {
 				i -= size;
 			} while (i >= size);
@@ -501,10 +599,56 @@ namespace tara {
 	}
 
 	template <typename T_>
+	void Matrix<T_>::set_cell(uint32_t x, uint32_t y, T_ val) {
+		set_cell(x + y * width, val);
+	}
+
+	template <typename T_>
 	void Matrix<T_>::set_cell(std::pair<int,int> cords, T_ val) {
 		set_cell(cords.first, cords.second, val);
 	}
 
+	template <typename T_>
+	void Matrix<T_>::set_cell(std::pair<uint32_t, uint32_t> cords, T_ val) {
+		set_cell(cords.first, cords.second, val);
+	}
+
+#ifdef TARA_PGE_EXTENSION
+	template <typename T_>
+	void Matrix<T_>::set_cell(olc::vi2d cords, T_ val) {
+		set_cell(cords.x, cords.y, val);
+	}
+
+	template <typename T_>
+	void Matrix<T_>::set_cell(olc::vu2d cords, T_ val) {
+		set_cell(cords.x, cords.y, val);
+	}
+#endif // TARA_PGE_EXTENSION
+
+	template <typename T_>
+	void Matrix<T_>::set_arr(Matrix<T_>* m) {
+		if (size != m->get_size()) {
+			throw "Cannot set array from different sized Matrices.";
+			return;
+		}
+		for (uint32_t i = 0; i < size; i++) {
+			arr[i] = m->get_cell(i);
+		}
+	}
+
+	template <typename T_>
+	void Matrix<T_>::set_arr(T_* setArr) {
+		for (uint32_t i = 0; i < size; i++) {
+			arr[i] = setArr[i];
+		}
+	}
+
+	template <typename T_>
+	void Matrix<T_>::clear(T_ setVal) {
+		for (uint32_t i = 0; i < size; i++) {
+			arr[i] = setVal;
+		}
+	}
 	template <typename T_>
 	bool Matrix<T_>::ok(std::string* out) const {
 		*out = _Error;
