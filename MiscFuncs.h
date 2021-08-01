@@ -167,6 +167,35 @@ inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pai
 	}
 }
 
+// Checks if element is in an array
+template<typename T>
+bool is_in(T* arr, uint32_t arrSize, T elem) {
+	for (uint32_t i = 0; i < arrSize; i++)
+		if (arr[i] == elem) return true;
+		
+	return false;
+}
+
+// Checks if element is in a vector
+template<typename T>
+bool is_in(std::vector<T> vec, T elem) {
+	for (T test : vec) {
+		if (test == elem) return true;
+	}
+	return false;
+}
+
+// Checks if element is in an array of vectors
+template<typename T>
+bool is_in(std::vector<T>* vec, uint32_t arrSize, T elem) {
+	for (uint32_t i=0; i<arrSize; i++)
+		for (T test : vec[i]) {
+			if (test == elem) return true;
+		}
+	return false;
+}
+
+
 // The Chinese Remainder Theorem - returns a value in [0,..., m1 * m2 * ... * mn)
 // DISCLAIMER: DOES NOT CHECK IF MODS ARE PAIRWISE COPRIME
 uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){

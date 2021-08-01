@@ -1,20 +1,19 @@
 #pragma once
 #include "Headers.h"
 
-#define btos(b) ((b) ? "1" : "0")
-#define btoc(b) ((b) ? '1' : '0')
+
 
 namespace tara {
 
 
     struct Bools {
-        uint8_t* data = new uint8_t(0x00);
+        uint8_t data = 0x00;
 
         bool get_val(int index) {
-            return (*data >> index) & 1;
+            return (data >> index) & 1;
         }
         void inv_val(int index) {
-            *data ^= 1 << index;
+            data ^= 1 << index;
         }
 
         void set_val(int index, bool val) {
@@ -40,23 +39,23 @@ namespace tara {
         }
 
         friend Bools operator^(Bools b1, Bools b2) {
-            return Bools(*b1.data ^ *b2.data);
+            return Bools(b1.data ^ b2.data);
         }
 
         friend Bools operator&(Bools b1, Bools b2) {
-            return Bools(*b1.data & *b2.data);
+            return Bools(b1.data & b2.data);
         }
 
         friend Bools operator|(Bools b1, Bools b2) {
-            return Bools(*b1.data | *b2.data);
+            return Bools(b1.data | b2.data);
         }
 
         friend Bools operator<<(Bools b, int n) {
-            return Bools(*b.data << n);
+            return Bools(b.data << n);
         }
 
         friend Bools operator>>(Bools b, int n) {
-            return Bools(*b.data >> n);
+            return Bools(b.data >> n);
         }
 
 
@@ -83,10 +82,10 @@ namespace tara {
         void flip(int index) { inv_val(index); }
 
 
-        std::vector<short> get_on() {
-            std::vector<short> out;
+        std::vector<uint8_t> get_on() {
+            std::vector<uint8_t> out;
 
-            for (short i = 0; i < 8; i++)
+            for (uint8_t i = 0; i < 8; i++)
                 if (get_val(i))
                     out.push_back(i);
 
@@ -94,10 +93,10 @@ namespace tara {
             return out;
         }
 
-        std::vector<short> get_off() {
-            std::vector<short> out;
+        std::vector<uint8_t> get_off() {
+            std::vector<uint8_t> out;
 
-            for (short i = 0; i < 8; i++)
+            for (uint8_t i = 0; i < 8; i++)
                 if (!get_val(i))
                     out.push_back(i);
 
@@ -106,7 +105,7 @@ namespace tara {
         }
 
         Bools(uint8_t set_vals = 0x00) {
-            data = new uint8_t(set_vals);
+            data = set_vals;
         }
         ~Bools() {
             /*try {
@@ -116,7 +115,22 @@ namespace tara {
             }*/
         }
     };
+
+    
 }
+
+// bool to char
+char btoc(bool b) {
+    if (b) return '1';
+    return '0';
+}
+
+// bool to char
+std::string btos(bool b) {
+    if (b) return "1";
+    return "0";
+}
+
 
 std::string to_str(tara::Bools in) {
     std::string out;

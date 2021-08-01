@@ -18,10 +18,9 @@ namespace tara {
 
 	public:
 
-
-
 		Matrix();
-		Matrix(int, int, T_*); // width, height, array
+		// constructor for (width, height, array)
+		Matrix(int, int, T_*); 
 		Matrix(std::vector<T_>*, int);
 		Matrix(std::vector<T_>*, int, bool);
 		Matrix(std::vector<std::pair<T_, T_>>*);
@@ -112,27 +111,40 @@ namespace tara {
 		void set_arr(T_*);
 		// sets every value to what you put in
 		void clear(T_);
+		// checks if value is in the matrix
+		bool is_in(T_);
 
-		bool ok(std::string*) const;
+		// return if the matrix is in an ok stateand
+		// out is an optional argument if you want to see the error if one has occurred
+		bool ok(std::string* out = nullptr) const {
+			if (out != nullptr) *out = _Error.copy();
+
+			return _ok;
+		}
 
 		void setHeightWidth(int, int);
 		std::string get_dim();
 
 
 
-		T_ operator[](int index) {
-			return arr[index];
-		}
+		T_ operator[](int index) { return arr[index]; }
 
-		friend Matrix<T_> operator*(Matrix<T_>, T_);
-		friend Matrix<T_> operator*(T_, Matrix<T_>);
-		friend Matrix<T_> operator*(Matrix<T_>, Matrix<T_>);
+		template <typename T__>
+		friend Matrix<T__> operator*(Matrix<T__>, T__);
+		template <typename T__>
+		friend Matrix<T__> operator*(T__, Matrix<T__>);
+		template <typename T__>
+		friend Matrix<T__> operator*(Matrix<T__>, Matrix<T__>);
 
-		friend Matrix<T_> operator+(Matrix<T_>, T_);
-		friend Matrix<T_> operator+(T_, Matrix<T_>);
-		friend Matrix<T_> operator+(Matrix<T_>, Matrix<T_>);
+		template <typename T__>
+		friend Matrix<T__> operator+(Matrix<T__>, T__);
+		template <typename T__>
+		friend Matrix<T__> operator+(T__, Matrix<T__>);
+		template <typename T__>
+		friend Matrix<T__> operator+(Matrix<T__>, Matrix<T__>);
 
-		friend Matrix<T_> operator-(Matrix<T_>, T_);
+		template <typename T__>
+		friend Matrix<T__> operator-(Matrix<T__>, T__);
 
 
 		friend std::ostream& operator<<(std::ostream& out, Matrix<T_> a) {
@@ -140,7 +152,8 @@ namespace tara {
 			return out;
 		}
 
-		friend bool operator==(Matrix<T_>, Matrix<T_>);
+		template <typename T__>
+		friend bool operator==(Matrix<T__>, Matrix<T__>);
 
 	};
 
@@ -513,7 +526,7 @@ namespace tara {
 	}
 
 	template <typename T_>
-	const const T_ Matrix<T_>::get_cell(uint32_t i) {
+	const T_ Matrix<T_>::get_cell(uint32_t i) {
 		if (i >= size) {
 			do {
 				i -= size;
@@ -650,10 +663,14 @@ namespace tara {
 		}
 	}
 	template <typename T_>
-	bool Matrix<T_>::ok(std::string* out) const {
-		*out = _Error;
-		return _ok;
+	bool Matrix<T_>::is_in(T_ val) {
+		for (uint32_t i = 0; i < size; i++) {
+			if (arr[i] == val)
+				return true;
+		}
+		return false;
 	}
+	
 	template <typename T_>
 	void Matrix<T_>::setHeightWidth(int setHeight, int setWidth) {
 
@@ -825,6 +842,10 @@ namespace tara {
 		return true;
 	}
 }
+
+// -------------------------------------------------------------------------------------------------
+// ----------------------------------------OUTSIDE FUNCTIONS----------------------------------------
+// -------------------------------------------------------------------------------------------------
 template <typename T>
 bool is1x1(tara::Matrix<T> a) {
 	return (a.get_width() == 1 && a.get_height() == 1);
