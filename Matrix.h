@@ -117,7 +117,7 @@ namespace tara {
 		// return if the matrix is in an ok stateand
 		// out is an optional argument if you want to see the error if one has occurred
 		bool ok(std::string* out = nullptr) const {
-			if (out != nullptr) *out = _Error.copy();
+			if (out != nullptr) *out = _Error;
 
 			return _ok;
 		}
