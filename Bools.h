@@ -1,5 +1,6 @@
 #pragma once
 #include "Headers.h"
+#include "MiscFuncs.h"
 
 
 
@@ -10,10 +11,10 @@ namespace tara {
         uint8_t data = 0x00;
 
         bool get_val(int index) {
-            return (data >> index) & 1;
+            return (data >> modulu(index, 8)) & 1;
         }
         void inv_val(int index) {
-            data ^= 1 << index;
+            data ^= 1 << modulu(index, 8);
         }
 
         void set_val(int index, bool val) {
@@ -107,29 +108,11 @@ namespace tara {
         Bools(uint8_t set_vals = 0x00) {
             data = set_vals;
         }
-        ~Bools() {
-            /*try {
-                delete data;
-            }catch(std::exception& e) {
-
-            }*/
-        }
     };
 
     
 }
 
-// bool to char
-char btoc(bool b) {
-    if (b) return '1';
-    return '0';
-}
-
-// bool to char
-std::string btos(bool b) {
-    if (b) return "1";
-    return "0";
-}
 
 
 std::string to_str(tara::Bools in) {

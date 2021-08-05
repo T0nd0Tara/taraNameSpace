@@ -8,7 +8,7 @@ namespace tara {
 	class Matrix
 	{
 	private:
-		int width, height, size;
+		uint32_t width, height, size;
 		T_* arr;
 
 
@@ -17,16 +17,20 @@ namespace tara {
 		std::string _Error = "";
 
 	public:
-
+		// Default Constructor
 		Matrix();
-		// constructor for (width, height, array)
-		Matrix(int, int, T_*); 
-		Matrix(std::vector<T_>*, int);
-		Matrix(std::vector<T_>*, int, bool);
-		Matrix(std::vector<std::pair<T_, T_>>*);
-		Matrix(std::vector<Matrix<T_>>);
+		// Constructor for (width, height, array)
+		Matrix(uint32_t, uint32_t, T_*); 
+		// Constructor for vector
+		Matrix(std::vector<T_>*, uint32_t);
+		// Constructor for array of vectors
+		Matrix(std::vector<T_>*, uint32_t, bool);
 
-		Matrix(int, int, T_);
+		Matrix(std::vector<std::pair<T_, T_>>*);
+
+		Matrix(std::vector<Matrix<T_>>);
+		// Sets all of the array to setVal (width, height, setVal)
+		Matrix(uint32_t, uint32_t, T_);
 
 		~Matrix();
 
@@ -50,18 +54,18 @@ namespace tara {
 
 		Matrix<float> norm();
 
-		int get_width()  const { return width; }
-		int get_height() const { return height; }
-		int get_size() const { return size; }
+		uint32_t get_width()  const { return width; }
+		uint32_t get_height() const { return height; }
+		uint32_t get_size()   const { return size; }
 
-		Matrix<T_> get_row(int);
-		Matrix<T_> get_col(int);
+		Matrix<T_> get_row(uint32_t);
+		Matrix<T_> get_col(uint32_t);
 
 		// gets a row and convert it to a vector
-		std::vector<T_>* get_rowVec(int);
+		std::vector<T_>* get_rowVec(uint32_t);
 
 		// gets a collumn and convert it to a vector
-		std::vector<T_>* get_colVec(int);
+		std::vector<T_>* get_colVec(uint32_t);
 
 		// get cell through index of the array
 		const T_ get_cell(int);
@@ -79,9 +83,12 @@ namespace tara {
 
 #ifdef TARA_PGE_EXTENSION
 		// get cell through olc::vi2d(x,y) cords
-		const T_ get_cell(olc::vi2d);
+		const T_ get_cell const (olc::vi2d);
 		// get cell through olc::vu2d(x,y) cords
-		const T_ get_cell(olc::vu2d);
+		const T_ get_cell const (olc::vu2d);
+		// get dimensions of the matrix by olc::vu2d(width, height)
+		const olc::vu2d   const get_dim();
+
 #endif // TARA_PGE_EXTENSION
 
 		// set cell through index of the array
@@ -123,11 +130,11 @@ namespace tara {
 		}
 
 		void setHeightWidth(int, int);
-		std::string get_dim();
+		std::string get_dim_str();
 
 
 
-		T_ operator[](int index) { return arr[index]; }
+		T_ operator[](int index) { return arr[index % size]; }
 
 		template <typename T__>
 		friend Matrix<T__> operator*(Matrix<T__>, T__);
@@ -161,7 +168,7 @@ namespace tara {
 	typedef Matrix<float> Matrixf;
 
 
-	// Default-constructor
+	// Default Constructor
 	template <typename T_>
 	Matrix<T_>::Matrix() {
 		_Error = "";
@@ -171,12 +178,12 @@ namespace tara {
 		height = 1;
 		size = 1;
 		arr = new T_[size];
-		arr[0] = 0;
+		arr[0] = T_(0);
 	}
 
 	// for array
 	template <typename T_>
-	Matrix<T_>::Matrix(int setWidth, int setHeight, T_* setArr) {
+	Matrix<T_>::Matrix(uint32_t setWidth, uint32_t setHeight, T_* setArr) {
 		_ok = true;
 		_Error = "";
 
@@ -188,7 +195,7 @@ namespace tara {
 		arr = new T_[size];
 
 
-		for (int i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			arr[i] = *setArr;
 			setArr++;
 		}
@@ -196,7 +203,7 @@ namespace tara {
 
 	// for vector
 	template <typename T_>
-	Matrix<T_>::Matrix(std::vector<T_>* setVec, int setWidth) {
+	Matrix<T_>::Matrix(std::vector<T_>* setVec, uint32_t setWidth) {
 		_ok = true;
 		_Error = "";
 
@@ -216,7 +223,7 @@ namespace tara {
 
 	// for array of vectors
 	template <typename T_>
-	Matrix<T_>::Matrix(std::vector<T_>* setVec, int setHeight, bool ArrayOfVectors) {
+	Matrix<T_>::Matrix(std::vector<T_>* setVec, uint32_t setHeight, bool ArrayOfVectors) {
 		_ok = true;
 		_Error = "";
 
@@ -233,7 +240,7 @@ namespace tara {
 
 		// checking if input is ok
 		width = setVec->size();
-		for (int i = 0; i < setHeight - 1; i++) {
+		for (uint32_t i = 0; i < setHeight - 1; i++) {
 			setVec++;
 			if (width != setVec->size()) {
 				// Error
@@ -248,7 +255,7 @@ namespace tara {
 		size = width * height;
 		// initialize
 		arr = new T_[size];
-		for (int i = 0; i < height; i++) {
+		for (uint32_t i = 0; i < height; i++) {
 			vecToArr<T_>(setVecDup, arr + i * width);
 			setVecDup++;
 		}
@@ -269,7 +276,7 @@ namespace tara {
 
 		arr = new T_[size];
 
-		for (int i = 0; i < size; i += 2) {
+		for (uint32_t i = 0; i < size; i += 2) {
 			arr[i] = (*in)[i >> 1].first;
 			arr[i + 1] = (*in)[i >> 1].second;
 
@@ -311,8 +318,8 @@ namespace tara {
 
 			arr = new T_[size];
 
-			for (int row = 0; row < height; row++) {
-				for (int cell = 0; cell < width; cell++) {
+			for (uint32_t row = 0; row < height; row++) {
+				for (uint32_t cell = 0; cell < width; cell++) {
 					arr[cell + row * width] = in[row][cell];
 				}
 			}
@@ -325,8 +332,8 @@ namespace tara {
 
 			arr = new T_[size];
 
-			for (int col = 0; col < width; col++) {
-				for (int cell = 0; cell < height; cell++) {
+			for (uint32_t col = 0; col < width; col++) {
+				for (uint32_t cell = 0; cell < height; cell++) {
 					arr[col + cell * height] = in[col][cell];
 				}
 			}
@@ -336,7 +343,7 @@ namespace tara {
 
 	// sets all of the array to setVal
 	template <typename T_>
-	Matrix<T_>::Matrix(int setWidth, int setHeight, T_ setVal) {
+	Matrix<T_>::Matrix(uint32_t setWidth, uint32_t setHeight, T_ setVal) {
 		_ok = true;
 		_Error = "";
 
@@ -346,7 +353,7 @@ namespace tara {
 
 		arr = new T_[size];
 
-		for (int i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			arr[i] = setVal;
 		}
 	}
@@ -481,82 +488,76 @@ namespace tara {
 	}
 
 	template <typename T_>
-	Matrix<T_> Matrix<T_>::get_row(int ind) {
+	Matrix<T_> Matrix<T_>::get_row(uint32_t ind) {
 		T_* data = new T_[width];
 
-		for (int x = 0; x < width; x++) {
+		for (uint32_t x = 0; x < width; x++) {
 			data[x] = arr[x + ind * width];
 		}
 
 		return Matrix<T_>(data, width, 1);
 	}
 	template <typename T_>
-	Matrix<T_> Matrix<T_>::get_col(int ind) {
+	Matrix<T_> Matrix<T_>::get_col(uint32_t ind) {
 		T_* data = new T_[height];
 
-		for (int y = 0; y < height; y++) {
+		for (uint32_t y = 0; y < height; y++) {
 			data[y] = arr[ind + y * width];
 		}
 
 		return Matrix<T_>(data, 1, height);
 	}
 	template <typename T_>
-	std::vector<T_>* Matrix<T_>::get_rowVec(int ind) {
+	std::vector<T_>* Matrix<T_>::get_rowVec(uint32_t ind) {
 		return get_row(ind).to_vec();
 	}
 	template <typename T_>
-	std::vector<T_>* Matrix<T_>::get_colVec(int ind) {
+	std::vector<T_>* Matrix<T_>::get_colVec(uint32_t ind) {
 		return get_col(ind).to_vec();
 	}
 
 	template <typename T_>
 	const T_ Matrix<T_>::get_cell(int i){
-		if (i < 0) { // euiv to mod size
-			do {
-				i += size;
-			} while (i < 0);
-		}
-		else if (i >= size) {
-			do {
-				i -= size;
-			} while (i >= size);
-		}
+		//if (i < 0) { // euiv to mod size
+		//	do {
+		//		i += size;
+		//	} while (i < 0);
+		//}
+		//else if (i >= size) {
+		//	do {
+		//		i -= size;
+		//	} while (i >= size);
+		//}
 		
-		return arr[i];
+		return arr[modulu((int64_t)i, (int64_t)size)];
 	}
 
 	template <typename T_>
 	const T_ Matrix<T_>::get_cell(uint32_t i) {
-		if (i >= size) {
-			do {
-				i -= size;
-			} while (i >= size);
-		}
-
-		return arr[i];
+		return arr[modulu(i, size)];
 	}
 
 	template <typename T_>
 	const T_ Matrix<T_>::get_cell(int x, int y) {
-		if (x + y * width >= size) {
-			// Error
-			this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
-			this->_ok = false;
-			return arr[size - 1];
-		}
-		return arr[x + y * width];
+		//if (x + y * width >= size) {
+		//	// Error
+		//	this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
+		//	this->_ok = false;
+		//	return arr[size - 1];
+		//}
+		return arr[modulu((int64_t)x, (int64_t)width) + modulu((int64_t)y, (int64_t)height) * width];
 	}
 
 
 	template <typename T_>
 	const T_ Matrix<T_>::get_cell(uint32_t x, uint32_t y) {
-		if (x + y * width >= size) {
-			// Error
-			this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
-			this->_ok = false;
-			return arr[size - 1];
-		}
-		return arr[x + y * width];
+		//if (x + y * width >= size) {
+		//	// Error
+		//	this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
+		//	this->_ok = false;
+		//	return arr[size - 1];
+		//}
+		return arr[modulu(x, width) + modulu(y, height) * width];
 	}
 
 	template <typename T_>
@@ -571,39 +572,29 @@ namespace tara {
 
 #ifdef TARA_PGE_EXTENSION
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell(olc::vi2d cords) {
+	const T_ Matrix<T_>::get_cell const (olc::vi2d cords) {
 		return get_cell(cords.x, cords.y);
 	}
 
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell(olc::vu2d cords) {
+	const T_ Matrix<T_>::get_cell const (olc::vu2d cords) {
 		return get_cell(cords.x, cords.y);
+	}
+
+	const olc::vu2d const get_dim() {
+		return olc::vu2d(width, height);
 	}
 #endif // TARA_PGE_EXTENSION
 
 	template <typename T_>
 	void Matrix<T_>::set_cell(int i, T_ val) {
-		if (i < 0) {
-			do {
-				i += size;
-			} while (i < 0);
-		}
-		else if (i >= size) {
-			do {
-				i -= size;
-			} while (i >= size);
-		}
-		arr[i] = val;
+		
+		arr[modulu((uint32_t)i, size)] = val;
 	}
 
 	template <typename T_>
 	void Matrix<T_>::set_cell(uint32_t i, T_ val) {
-		if (i >= size) {
-			do {
-				i -= size;
-			} while (i >= size);
-		}
-		arr[i] = val;
+		arr[modulu(i, size)] = val;
 	}
 
 	template <typename T_>
@@ -680,7 +671,7 @@ namespace tara {
 	}
 
 	template <typename T_>
-	std::string Matrix<T_>::get_dim() {
+	std::string Matrix<T_>::get_dim_str() {
 		return "{ " + std::to_string(width) + ", " + std::to_string(height) + " }";
 	}
 
@@ -697,7 +688,7 @@ namespace tara {
 	Matrix<T_> operator*(Matrix<T_> a, T_ alpha) {
 		T_* newArr = new T_[a.size];
 
-		for (int i = 0; i < a.size; i++) {
+		for (uint32_t i = 0; i < a.size; i++) {
 			newArr[i] = alpha * a.arr[i];
 		}
 		return Matrix<T_>(newArr, a.width, a.height);
@@ -722,8 +713,8 @@ namespace tara {
 
 		T_* out = new T_[a.get_height() * b.get_width()];
 
-		for (int y = 0; y < a.get_height(); y++) {
-			for (int x = 0; x < b.get_width(); x++) {
+		for (uint32_t y = 0; y < a.get_height(); y++) {
+			for (uint32_t x = 0; x < b.get_width(); x++) {
 				out[x + y * b.get_width()] = dotProd(a.get_rowVec(y), b.get_colVec(x));
 			}
 		}
@@ -734,7 +725,7 @@ namespace tara {
 	template <typename T_>
 	Matrix<T_> operator+(Matrix<T_> a, T_ b) {
 		T_* out = new T_[a.size];
-		for (int i = 0; i < a.size; i++) {
+		for (uint32_t i = 0; i < a.size; i++) {
 			out[i] = a.arr[i] + b;
 		}
 		return Matrix<T_>(out, a.width, a.height);
@@ -763,7 +754,7 @@ namespace tara {
 		if (a.height == b.height && a.width == b.width) {
 			T_* newArr = new T_[a.size];
 
-			for (int i = 0; i < a.size; i++) {
+			for (uint32_t i = 0; i < a.size; i++) {
 				newArr[i] = a.arr[i] + b.arr[i];
 			}
 			return Matrix<T_>(newArr, a.width, a.height);
@@ -783,8 +774,8 @@ namespace tara {
 		if (a.height == 1) {
 			T_* newArr = new T_[b.size];
 
-			for (int y = 0; y < b.height; y++)
-				for (int x = 0; x < b.width; x++) {
+			for (uint32_t y = 0; y < b.height; y++)
+				for (uint32_t x = 0; x < b.width; x++) {
 					newArr[x + y * b.width] = b.arr[x + y * b.width] + a.arr[x];
 				}
 			return Matrix<T_>(newArr, b.width, b.height);
@@ -792,8 +783,8 @@ namespace tara {
 		if (b.height == 1) {
 			T_* newArr = new T_[a.size];
 
-			for (int y = 0; y < a.height; y++)
-				for (int x = 0; x < a.width; x++) {
+			for (uint32_t y = 0; y < a.height; y++)
+				for (uint32_t x = 0; x < a.width; x++) {
 					newArr[x + y * a.width] = a.arr[x + y * a.width] + b.arr[x];
 				}
 			return Matrix<T_>(newArr, a.width, a.height);
@@ -806,8 +797,8 @@ namespace tara {
 		if (a.width == 1) {
 			T_* newArr = new T_[b.size];
 
-			for (int y = 0; y < a.height; y++)
-				for (int x = 0; x < b.width; x++) {
+			for (uint32_t y = 0; y < a.height; y++)
+				for (uint32_t x = 0; x < b.width; x++) {
 					newArr[x + y * b.width] = b.arr[x + y * b.width] + a.arr[y];
 				}
 			return Matrix<T_>(newArr, b.width, b.height);
@@ -815,8 +806,8 @@ namespace tara {
 		else { // b.width == 1
 			T_* newArr = new T_[a.size];
 
-			for (int y = 0; y < b.height; y++)
-				for (int x = 0; x < a.width; x++) {
+			for (uint32_t y = 0; y < b.height; y++)
+				for (uint32_t x = 0; x < a.width; x++) {
 					newArr[x + y * a.width] = a.arr[x + y * a.width] + b.arr[y];
 				}
 			return Matrix<T_>(newArr, a.width, a.height);
@@ -827,7 +818,7 @@ namespace tara {
 
 	template <typename T_>
 	Matrix<T_> operator-(Matrix<T_> a, T_ b) {
-		return a + (-b);
+		return a + (-1 * b);
 	}
 
 	template <typename T_>
@@ -835,13 +826,13 @@ namespace tara {
 		if (a.width != b.width || a.height != b.height)
 			return false;
 
-		for (int i = 0; i < a.size; i++)
+		for (uint32_t i = 0; i < a.size; i++)
 			if (a.arr[i] != b.arr[i])
 				return false;
 
 		return true;
 	}
-}
+} // namespace tara
 
 // -------------------------------------------------------------------------------------------------
 // ----------------------------------------OUTSIDE FUNCTIONS----------------------------------------

@@ -2,6 +2,30 @@
 
 #include "Headers.h"
 
+// bool to char
+char btoc(bool b) {
+	if (b) return '1';
+	return '0';
+}
+
+// bool to char
+std::string btos(bool b) {
+	if (b) return "1";
+	return "0";
+}
+
+// integer power (doesn't uses doubles like pow)
+// return x^n
+// in this function 0^0 := 0
+int32_t powi(int32_t x, uint32_t n) {
+	if (x == 0) return 0;
+	int32_t out = 1;
+	for (uint32_t i = 0; i < n; i++) {
+		out *= x;
+	}
+	return out;
+}
+
 template <typename T>
 inline T dotProd(std::vector<T>* a, std::vector<T>* b) {
 	if (a->size() != b->size()) {
@@ -196,6 +220,53 @@ bool is_in(std::vector<T>* vec, uint32_t arrSize, T elem) {
 }
 
 
+// The replace string from python
+bool pyReplace(std::string& str, const std::string& from, const std::string& to) {
+	bool beenReplaced = false;
+	size_t start_pos = str.find(from);
+	while (start_pos != std::string::npos) {
+		//std::cout << str << ";  " << start_pos << "\n";
+		str.replace(start_pos, from.length(), to);
+		beenReplaced = true;
+		
+		start_pos = str.find(from, start_pos + to.length());
+	}
+	//std::cout << "finished loop\n";
+	//std::cout << str << ";  " << start_pos << "\n";
+	return beenReplaced;
+}
+
+#ifndef TARA_NO_BOOST
+// The split string from python
+std::vector<std::string> pySplit(std::string str, std::string sep) {
+	std::vector<std::string> out;
+	boost::split(out, str, boost::is_any_of(sep), boost::token_compress_on);
+	return out;
+}
+
+// The split string from python
+void pySplit(std::vector<std::string>& IOvec, std::string str, std::string sep) {
+		boost::split(IOvec, str, boost::is_any_of(sep), boost::token_compress_on);
+}
+#endif // TARA_NO_BOOST
+
+// real modulu (not like %) - also work for negative numbers
+// works with floats and doubles
+// returns y = x(mod m) where y in {0,..., m-1}
+template<typename T>
+T modulu(T x, T m) {
+	if (x >= m) 
+		do {
+			x -= m;
+		} while (x >= m);
+	
+	else if (x < T(0))
+		do {
+			x += m;
+		} while (x < T(0));
+
+	return x;
+}
 // The Chinese Remainder Theorem - returns a value in [0,..., m1 * m2 * ... * mn)
 // DISCLAIMER: DOES NOT CHECK IF MODS ARE PAIRWISE COPRIME
 uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){
