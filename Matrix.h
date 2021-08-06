@@ -83,11 +83,11 @@ namespace tara {
 
 #ifdef TARA_PGE_EXTENSION
 		// get cell through olc::vi2d(x,y) cords
-		const T_ get_cell const (olc::vi2d);
+		const T_ get_cell (olc::vi2d) const;
 		// get cell through olc::vu2d(x,y) cords
-		const T_ get_cell const (olc::vu2d);
+		const T_ get_cell (olc::vu2d) const;
 		// get dimensions of the matrix by olc::vu2d(width, height)
-		const olc::vu2d   const get_dim();
+		const olc::vu2d get_dim() const;
 
 #endif // TARA_PGE_EXTENSION
 
@@ -572,16 +572,17 @@ namespace tara {
 
 #ifdef TARA_PGE_EXTENSION
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell const (olc::vi2d cords) {
+	const T_ Matrix<T_>::get_cell (olc::vi2d cords) const {
 		return get_cell(cords.x, cords.y);
 	}
 
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell const (olc::vu2d cords) {
+	const T_ Matrix<T_>::get_cell (olc::vu2d cords) const {
 		return get_cell(cords.x, cords.y);
 	}
 
-	const olc::vu2d const get_dim() {
+	template <typename T_>
+	const olc::vu2d Matrix<T_>::get_dim() const {
 		return olc::vu2d(width, height);
 	}
 #endif // TARA_PGE_EXTENSION

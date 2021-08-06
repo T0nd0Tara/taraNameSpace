@@ -13,13 +13,19 @@ namespace tara {
 
 	public:
 		int32_t eval(int32_t);
-		float eval(float);
+		double eval(double);
+
+#ifdef TARA_PGE_EXTENSION
+		void Draw(olc::PixelGameEngine*, olc::vi2d offset = { 0,0 }, olc::vd2d scale = { 1.0,1.0 });
+#endif // TARA_PGE_EXTENSION
 
 		PolynomialInt(int32_t*, uint32_t);
 
 #ifndef TARA_NO_BOOST
 		PolynomialInt(std::string);
 #endif // TARA_NO_BOOST
+
+
 
 		~PolynomialInt();
 	};
@@ -35,8 +41,8 @@ namespace tara {
 		return out;
 	}
 
-	float PolynomialInt::eval(float x) {
-		float out = coeffs[0];
+	double PolynomialInt::eval(double x) {
+		double out = (double)coeffs[0];
 
 		for (uint32_t i = 1; i <= deg; i++) {
 			out += coeffs[i] * pow(x, i);
@@ -45,6 +51,13 @@ namespace tara {
 		return out;
 	}
 
+#ifdef TARA_PGE_EXTENSION
+	void PolynomialInt::Draw(olc::PixelGameEngine* pge, olc::vi2d offset, olc::vd2d scale) {
+		for (double x = 0.0; x < pge->ScreenWidth(); x += 0.05) {
+			pge->Draw(x, (eval(scale.x * (x - pge->ScreenWidth() / 2 - offset.x)) + offset.y) * scale.y + pge->ScreenHeight() / 2);
+		}
+	}
+#endif // TARA_PGE_EXTENSION
 	// ========================Constructers========================
 	PolynomialInt::PolynomialInt(int32_t* setCoeffs, uint32_t setDeg) {
 		deg = setDeg;
@@ -89,14 +102,18 @@ namespace tara {
 			else if (polyTempStr2[i].size() == 1) polyTempStr2[i].push_back("0");
 
 			if (polyTempStr2[i][0] == "") polyTempStr2[i][0] = "1";
+
+			// make it work with -x^2 and not just -1x^2
+			else if (polyTempStr2[i][0] == "-") polyTempStr2[i][0] = "-1";
 			
 		}
 
 		polyTempPair = new std::pair<int, uint32_t>[polyTempStr1->size()]();
 		for (uint32_t i = 0; i < polyTempStr1->size(); i++) {
-			polyTempPair[i].first  =		   std::stoi(polyTempStr2[i][0]);
+			
+			polyTempPair[i].first = std::stoi(polyTempStr2[i][0]);
 
-			// can't have signed ints uin the exponent
+			// can't have signed ints the exponent
 			pyReplace(polyTempStr2[i][1], "-", "");
 			polyTempPair[i].second = (uint32_t)std::stoi(polyTempStr2[i][1]);
 		}
@@ -122,7 +139,7 @@ namespace tara {
 #endif // TARA_NO_BOOST
 
 	PolynomialInt::~PolynomialInt() {
-		delete coeffs;
+		delete[] coeffs;
 	}
 
 	

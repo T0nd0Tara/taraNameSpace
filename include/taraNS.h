@@ -49,6 +49,12 @@ Updates:
 			-changing methods of tara::Matrix to use the modulu function
 
 			-adding PolynomialInt(std::string) method
+
+
+	6.8.2021:
+			-adding PolynomialInt::Draw for olc::PixelGameEngine support
+
+			-adding an example for PolynomialInt::Draw
 				
  */
 
