@@ -15,10 +15,10 @@ private:
 
 	tara::PolynomialInt* f;
 	olc::vd2d offset;
-	
+
 protected:
 	bool OnUserCreate() override {
-		f = new tara::PolynomialInt("3x^3-8x^2-15x^1");
+		f = new tara::PolynomialInt("x^4+5x^3-8x^2-15x^1 + 15");
 		offset = { 0.0,0.0 };
 		return true;
 	}
@@ -29,17 +29,17 @@ protected:
 		Clear(olc::BLACK);
 
 		// Updating offset
-		if (GetKey(olc::D).bHeld) offset.x += 20 * elapsedTime;
-		if (GetKey(olc::A).bHeld) offset.x -= 20 * elapsedTime;
-		if (GetKey(olc::W).bHeld) offset.y -= 20 * elapsedTime;
-		if (GetKey(olc::S).bHeld) offset.y += 20 * elapsedTime;
+		if (GetKey(olc::D).bHeld) offset.x -= 50 * elapsedTime;
+		if (GetKey(olc::A).bHeld) offset.x += 50 * elapsedTime;
+		if (GetKey(olc::W).bHeld) offset.y += 50 * elapsedTime;
+		if (GetKey(olc::S).bHeld) offset.y -= 50 * elapsedTime;
 
 		// Drawing x & y axis
 		DrawLine(0, ScreenHeight() / 2 + offset.y, ScreenWidth(), ScreenHeight() / 2 + offset.y, olc::GREEN);
 		DrawLine(ScreenWidth() / 2 + offset.x, 0, ScreenWidth() / 2 + offset.x, ScreenHeight(), olc::GREEN);
 
 		// Drawing the function f
-		f->Draw(this, offset, olc::vd2d{0.1,1.0});
+		f->Draw(this, offset, olc::vd2d{ 0.1,1.0 }, 0.05);
 
 		return true;
 	}
@@ -47,7 +47,7 @@ protected:
 
 int main() {
 	PolynomialDrawDemo demo;
-	if (demo.Construct(256, 240, 4, 4))
+	if (demo.Construct(512, 480, 2, 2))
 		demo.Start();
 	return 0;
 }

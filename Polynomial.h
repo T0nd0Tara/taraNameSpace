@@ -16,7 +16,7 @@ namespace tara {
 		double eval(double);
 
 #ifdef TARA_PGE_EXTENSION
-		void Draw(olc::PixelGameEngine*, olc::vi2d offset = { 0,0 }, olc::vd2d scale = { 1.0,1.0 });
+		void Draw(olc::PixelGameEngine*, olc::vi2d offset = { 0,0 }, olc::vd2d scale = { 1.0,1.0 }, double step = 0.01);
 #endif // TARA_PGE_EXTENSION
 
 		PolynomialInt(int32_t*, uint32_t);
@@ -52,9 +52,9 @@ namespace tara {
 	}
 
 #ifdef TARA_PGE_EXTENSION
-	void PolynomialInt::Draw(olc::PixelGameEngine* pge, olc::vi2d offset, olc::vd2d scale) {
-		for (double x = 0.0; x < pge->ScreenWidth(); x += 0.05) {
-			pge->Draw(x, (eval(scale.x * (x - pge->ScreenWidth() / 2 - offset.x)) + offset.y) * scale.y + pge->ScreenHeight() / 2);
+	void PolynomialInt::Draw(olc::PixelGameEngine* pge, olc::vi2d offset, olc::vd2d scale, double step) {
+		for (double x = 0.0; x < pge->ScreenWidth(); x += step) {
+			pge->Draw(x, (offset.y - eval(scale.x * (x - pge->ScreenWidth() / 2 - offset.x))) * scale.y + pge->ScreenHeight() / 2);
 		}
 	}
 #endif // TARA_PGE_EXTENSION
