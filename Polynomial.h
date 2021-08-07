@@ -26,11 +26,24 @@ namespace tara {
 
 		Polynomial prime();
 
+		std::string str();
+
 #ifdef TARA_PGE_EXTENSION
 		void Draw(olc::PixelGameEngine*, olc::vi2d offset = { 0,0 }, olc::vd2d scale = { 1.0,1.0 }, double step = 0.01);
 #endif // TARA_PGE_EXTENSION
 
+		friend Polynomial operator*(Polynomial&, int32_t);
+		friend Polynomial operator*(int32_t, Polynomial&);
 
+
+		friend Polynomial operator+(Polynomial&, Polynomial&);
+
+		friend Polynomial operator+(Polynomial&, int32_t);
+		friend Polynomial operator+(int32_t, Polynomial&);
+
+
+		friend std::ostream& operator<<(std::ostream&, Polynomial);
+		friend bool operator==(Polynomial&, Polynomial&);
 	};
 
 	// ========================Constructors========================
@@ -38,6 +51,8 @@ namespace tara {
 
 	Polynomial::Polynomial(int32_t* setCoeffs, uint32_t setDeg) {
 		deg = setDeg;
+		while (setCoeffs[deg] == 0 && deg > 0) deg--;
+
 		coeffs = new int32_t[deg + 1]();
 		for (uint32_t i = 0; i <= deg; i++) {
 			coeffs[i] = setCoeffs[i];
@@ -100,12 +115,17 @@ namespace tara {
 		for (uint32_t i = 0; i < polyTempStr1->size(); i++) {
 			deg = std::max(deg, polyTempPair[i].second);
 		}
+		
 
 		coeffs = new int32_t[deg + 1]();
 		for (uint32_t i = 0; i <= deg; i++) coeffs[i] = 0;
+
 		for (uint32_t i = 0; i < polyTempStr1->size(); i++) {
 			coeffs[polyTempPair[i].second] += polyTempPair[i].first;
 		}
+
+		// making sure the most segnificent coeff != 0
+		while (coeffs[deg] == 0 && deg > 0) deg--;
 
 
 		delete   polyTempStr0;
@@ -153,6 +173,23 @@ namespace tara {
 		return Polynomial(newCoeff, deg - 1);
 	}
 
+	std::string Polynomial::str() {
+		std::string out = "";
+		for (uint32_t i = deg; i > 0; i--) {
+			if (coeffs[i] == 0) continue;
+			if (coeffs[i] > 0 && i != deg) out += "+";
+
+			if (coeffs[i] != 1)
+				out += std::to_string(coeffs[i]);
+
+			if (i == 1) out += "x";
+			else if (i > 1) out += "x^" + std::to_string(i);
+		}
+		if (coeffs[0] != 0)
+			out += std::to_string(coeffs[0]);
+		return out;
+	}
+
 #ifdef TARA_PGE_EXTENSION
 	void Polynomial::Draw(olc::PixelGameEngine* pge, olc::vi2d offset, olc::vd2d scale, double step) {
 		for (double x = 0.0; x < pge->ScreenWidth(); x += step) {
@@ -162,6 +199,58 @@ namespace tara {
 #endif // TARA_PGE_EXTENSION
 #pragma endregion Methods
 
+	// ========================Friend Funcs========================
+#pragma region Friend_Funcs
+	Polynomial operator*(Polynomial& p, int32_t alpha) {
+		int32_t* newCoeff = new int32_t[p.deg + 1]();
+		for (uint32_t i = 0; i <= p.deg; i++) {
+			newCoeff[i] = p.coeffs[i] * alpha;
+		}
+		return Polynomial(newCoeff, p.deg);
+	}
+
+	Polynomial operator*(int32_t alpha, Polynomial& p) { return p * alpha; }
+
+	Polynomial operator+(Polynomial& lhs, Polynomial& rhs) {
+		// making sure that lhs.deg > rhs.deg
+		if (rhs.deg > lhs.deg) return rhs + lhs;
+
+		int32_t* newCoeffs = new int32_t[lhs.deg + 1]();
+		for (uint32_t i = rhs.deg + 1; i <= lhs.deg; i++) {
+			newCoeffs[i] = lhs.coeffs[i];
+		}
+
+		for (uint32_t i = 0; i <= rhs.deg; i++) {
+			newCoeffs[i] = lhs.coeffs[i] + rhs.coeffs[i];
+		}
+		return Polynomial(newCoeffs, lhs.deg);
+	}
+
+	Polynomial operator+(Polynomial& p, int32_t alpha) {
+		int32_t* newCoeffs = new int32_t[p.deg + 1]();
+		for (uint32_t i = 1; i <= p.deg; i++)
+			newCoeffs[i] = p.coeffs[i];
+
+		newCoeffs[0] = p.coeffs[0] + alpha;
+
+		return Polynomial(newCoeffs, p.deg);
+	}
+	Polynomial operator+(int32_t alpha, Polynomial& p) { return p + alpha; }
+
+	std::ostream& operator<<(std::ostream& out, Polynomial p) {
+		out << p.str();
+		return out;
+	}
+
+	bool operator==(Polynomial& lhs, Polynomial& rhs) {
+		if (lhs.deg != rhs.deg) return false;
+
+		for (uint32_t i = 0; i <= lhs.deg; i++) 
+			if (lhs.coeffs[i] != rhs.coeffs[i]) return false;
+
+		return true;
+	}
+#pragma endregion Friend_Funcs
 
 	
 	

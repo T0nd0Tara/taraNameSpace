@@ -153,6 +153,8 @@ inline int len(T in) {
 	return std::to_string(in).length();
 }
 
+#pragma region Random
+
 // random number between 0 and 1
 inline float rand0_1() { 
 	return (float)rand() / (float)RAND_MAX;
@@ -171,6 +173,7 @@ inline void randArr(float* out, int size) {
 	}
 }
 
+#pragma endregion Random
 
 template<typename To, typename From>
 inline std::pair<To, To> convert(const std::pair<From, From> p) {
@@ -190,6 +193,8 @@ inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pai
 		out++;
 	}
 }
+
+#pragma region is_in
 
 // Checks if element is in an array
 template<typename T>
@@ -218,7 +223,9 @@ bool is_in(std::vector<T>* vec, uint32_t arrSize, T elem) {
 		}
 	return false;
 }
+#pragma endregion is_in
 
+#pragma region Python_Funcs
 
 // The replace string from python
 bool pyReplace(std::string& str, const std::string& from, const std::string& to) {
@@ -249,6 +256,9 @@ void pySplit(std::vector<std::string>& IOvec, std::string str, std::string sep) 
 		boost::split(IOvec, str, boost::is_any_of(sep), boost::token_compress_on);
 }
 #endif // TARA_NO_BOOST
+#pragma endregion Python_Funcs
+
+#pragma region Number_Theory
 
 // real modulu (not like %) - also work for negative numbers
 // works with floats and doubles
@@ -295,3 +305,4 @@ uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){
     return x % N;
 
 }
+#pragma endregion Number_Theory

@@ -699,11 +699,11 @@ namespace tara {
 	}
 
 	template <typename T_>
-	tara::Matrix<T_> operator*(T_ alpha, Matrix<T_> a) {
+	Matrix<T_> operator*(T_ alpha, Matrix<T_> a) {
 		return a * alpha;
 	}
 	template <typename T_>
-	tara::Matrix<T_> operator*(Matrix<T_> a, Matrix<T_> b) {
+	Matrix<T_> operator*(Matrix<T_> a, Matrix<T_> b) {
 		if (b.get_height() != a.get_width()) {
 			// Error
 
