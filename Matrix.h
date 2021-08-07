@@ -167,6 +167,8 @@ namespace tara {
 	// making the Matrixf a thing you can use
 	typedef Matrix<float> Matrixf;
 
+	// ========================Constructors========================
+#pragma region Constructors
 
 	// Default Constructor
 	template <typename T_>
@@ -361,6 +363,11 @@ namespace tara {
 	Matrix<T_>::~Matrix() {
 		delete[] arr;
 	}
+
+#pragma endregion Constructors
+
+	// ==========================Methods===========================
+#pragma region Methods
 
 	template <typename T_>
 	Matrix<T_>* Matrix<T_>::copy() {
@@ -676,14 +683,10 @@ namespace tara {
 		return "{ " + std::to_string(width) + ", " + std::to_string(height) + " }";
 	}
 
+#pragma endregion Methods
 
-
-
-
-
-	// -------------------------------------------------------------------------------------------------
-	// ---------------------------------------THE FRIEND FUNCTIONS--------------------------------------
-	// -------------------------------------------------------------------------------------------------
+	// ========================Friend Funcs========================
+#pragma region Friend_Funcs
 
 	template <typename T_>
 	Matrix<T_> operator*(Matrix<T_> a, T_ alpha) {
@@ -833,6 +836,8 @@ namespace tara {
 
 		return true;
 	}
+#pragma endregion Friend_Funcs
+
 } // namespace tara
 
 // -------------------------------------------------------------------------------------------------
