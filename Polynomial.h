@@ -12,6 +12,8 @@ namespace tara {
 		uint32_t deg;
 
 	public:
+		Polynomial(const Polynomial&);
+
 		Polynomial(int32_t*, uint32_t);
 
 #ifndef TARA_NO_BOOST
@@ -43,11 +45,23 @@ namespace tara {
 
 
 		friend std::ostream& operator<<(std::ostream&, Polynomial);
+
 		friend bool operator==(Polynomial&, Polynomial&);
+
+		Polynomial& operator=(Polynomial);
 	};
 
 	// ========================Constructors========================
 #pragma region Constructors
+
+	Polynomial::Polynomial(const Polynomial& p) {
+		deg = p.deg;
+
+		coeffs = new int32_t[deg + 1]();
+		for (uint32_t i = 0; i <= deg; i++)
+			coeffs[i] = p.coeffs[i];
+
+	}
 
 	Polynomial::Polynomial(int32_t* setCoeffs, uint32_t setDeg) {
 		deg = setDeg;
@@ -186,6 +200,7 @@ namespace tara {
 			else if (i > 1) out += "x^" + std::to_string(i);
 		}
 		if (coeffs[0] != 0)
+			if (coeffs[0] > 0) out += "+";
 			out += std::to_string(coeffs[0]);
 		return out;
 	}
@@ -199,8 +214,8 @@ namespace tara {
 #endif // TARA_PGE_EXTENSION
 #pragma endregion Methods
 
-	// ========================Friend Funcs========================
-#pragma region Friend_Funcs
+	//	========================Operators==========================
+#pragma region Operators
 	Polynomial operator*(Polynomial& p, int32_t alpha) {
 		int32_t* newCoeff = new int32_t[p.deg + 1]();
 		for (uint32_t i = 0; i <= p.deg; i++) {
@@ -237,10 +252,12 @@ namespace tara {
 	}
 	Polynomial operator+(int32_t alpha, Polynomial& p) { return p + alpha; }
 
-	std::ostream& operator<<(std::ostream& out, Polynomial p) {
+	std::ostream& operator<<(std::ostream& out, Polynomial& p) {
 		out << p.str();
 		return out;
 	}
+
+	
 
 	bool operator==(Polynomial& lhs, Polynomial& rhs) {
 		if (lhs.deg != rhs.deg) return false;
@@ -250,7 +267,18 @@ namespace tara {
 
 		return true;
 	}
-#pragma endregion Friend_Funcs
+
+	Polynomial& Polynomial::operator=(Polynomial rhs) {
+		delete[] coeffs;
+
+		deg = rhs.deg;
+		coeffs = new int32_t[deg + 1]();
+		for (uint32_t i = 0; i <= deg; i++) {
+			coeffs[i] = rhs.coeffs[i];
+		}
+		return *this;
+	}
+#pragma endregion Operators
 
 	
 	
