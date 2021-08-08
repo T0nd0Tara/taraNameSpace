@@ -34,14 +34,17 @@ namespace tara {
 		void Draw(olc::PixelGameEngine*, olc::vi2d offset = { 0,0 }, olc::vd2d scale = { 1.0,1.0 }, double step = 0.01);
 #endif // TARA_PGE_EXTENSION
 
-		friend Polynomial operator*(Polynomial&, int32_t);
-		friend Polynomial operator*(int32_t, Polynomial&);
+		friend Polynomial operator*(Polynomial, int32_t);
+		friend Polynomial operator*(int32_t, Polynomial);
 
 
-		friend Polynomial operator+(Polynomial&, Polynomial&);
+		friend Polynomial operator+(Polynomial, Polynomial);
 
-		friend Polynomial operator+(Polynomial&, int32_t);
-		friend Polynomial operator+(int32_t, Polynomial&);
+		friend Polynomial operator+(Polynomial, int32_t);
+		friend Polynomial operator+(int32_t, Polynomial);
+
+		friend Polynomial operator-(int32_t, Polynomial);
+		friend Polynomial operator-(Polynomial, int32_t);
 
 
 		friend std::ostream& operator<<(std::ostream&, Polynomial);
@@ -216,7 +219,7 @@ namespace tara {
 
 	//	========================Operators==========================
 #pragma region Operators
-	Polynomial operator*(Polynomial& p, int32_t alpha) {
+	Polynomial operator*(Polynomial p, int32_t alpha) {
 		int32_t* newCoeff = new int32_t[p.deg + 1]();
 		for (uint32_t i = 0; i <= p.deg; i++) {
 			newCoeff[i] = p.coeffs[i] * alpha;
@@ -224,9 +227,9 @@ namespace tara {
 		return Polynomial(newCoeff, p.deg);
 	}
 
-	Polynomial operator*(int32_t alpha, Polynomial& p) { return p * alpha; }
+	Polynomial operator*(int32_t alpha, Polynomial p) { return p * alpha; }
 
-	Polynomial operator+(Polynomial& lhs, Polynomial& rhs) {
+	Polynomial operator+(Polynomial lhs, Polynomial rhs) {
 		// making sure that lhs.deg > rhs.deg
 		if (rhs.deg > lhs.deg) return rhs + lhs;
 
@@ -241,7 +244,7 @@ namespace tara {
 		return Polynomial(newCoeffs, lhs.deg);
 	}
 
-	Polynomial operator+(Polynomial& p, int32_t alpha) {
+	Polynomial operator+(Polynomial p, int32_t alpha) {
 		int32_t* newCoeffs = new int32_t[p.deg + 1]();
 		for (uint32_t i = 1; i <= p.deg; i++)
 			newCoeffs[i] = p.coeffs[i];
@@ -250,9 +253,12 @@ namespace tara {
 
 		return Polynomial(newCoeffs, p.deg);
 	}
-	Polynomial operator+(int32_t alpha, Polynomial& p) { return p + alpha; }
+	Polynomial operator+(int32_t alpha, Polynomial p) { return p + alpha; }
 
-	std::ostream& operator<<(std::ostream& out, Polynomial& p) {
+	Polynomial operator-(int32_t alpha, Polynomial p) { return (-1 * p) + alpha; }
+	Polynomial operator-(Polynomial p, int32_t alpha) { return p + (-alpha); }
+
+	std::ostream& operator<<(std::ostream& out, Polynomial p) {
 		out << p.str();
 		return out;
 	}

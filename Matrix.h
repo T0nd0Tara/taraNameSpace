@@ -19,6 +19,8 @@ namespace tara {
 	public:
 		// Default Constructor
 		Matrix();
+		// Copy constructor
+		Matrix(const Matrix<T_>&);
 		// Constructor for (width, height, array)
 		Matrix(uint32_t, uint32_t, T_*); 
 		// Constructor for vector
@@ -162,6 +164,9 @@ namespace tara {
 		template <typename T__>
 		friend bool operator==(Matrix<T__>, Matrix<T__>);
 
+		Matrix<T_>& operator=(Matrix<T_>);
+
+
 	};
 
 	// making the Matrixf a thing you can use
@@ -179,8 +184,24 @@ namespace tara {
 		width = 1;
 		height = 1;
 		size = 1;
-		arr = new T_[size];
+		arr = new T_[size]();
 		arr[0] = T_(0);
+	}
+
+	// Copy Constructor
+	template <typename T_>
+	Matrix<T_>::Matrix(const Matrix<T_>& rhs) {
+		_Error = rhs._Error;
+		_ok = rhs._ok;
+
+		width = rhs.width;
+		height = rhs.height;
+		size = rhs.size;
+
+		arr = new T_[size]();
+		for (uint32_t i = 0; i < size; i++) {
+			arr[i] = rhs.arr[i];
+		}
 	}
 
 	// for array
@@ -685,8 +706,8 @@ namespace tara {
 
 #pragma endregion Methods
 
-	// ========================Friend Funcs========================
-#pragma region Friend_Funcs
+	// =========================Operators==========================
+#pragma region Operators
 
 	template <typename T_>
 	Matrix<T_> operator*(Matrix<T_> a, T_ alpha) {
@@ -836,7 +857,23 @@ namespace tara {
 
 		return true;
 	}
-#pragma endregion Friend_Funcs
+	template <typename T_>
+	Matrix<T_>& Matrix<T_>::operator=(Matrix<T_> rhs) {
+		delete[] arr;
+
+		_Error = rhs._Error;
+		_ok = rhs._ok;
+
+		width = rhs.width;
+		height = rhs.height;
+		size = rhs.size;
+
+		arr = new T_[size]();
+		for (uint32_t i = 0; i < size; i++) {
+			arr[i] = rhs.arr[i];
+		}
+	}
+#pragma endregion Operators
 
 } // namespace tara
 
