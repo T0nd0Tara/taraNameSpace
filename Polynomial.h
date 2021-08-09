@@ -12,6 +12,7 @@ namespace tara {
 		uint32_t deg;
 
 	public:
+		// Copy constructor
 		Polynomial(const Polynomial&);
 
 		Polynomial(int32_t*, uint32_t);
@@ -24,7 +25,8 @@ namespace tara {
 
 
 		int32_t eval(int32_t);
-		double eval(double);
+		float   eval(float);
+		double  eval(double);
 
 		Polynomial prime();
 
@@ -33,6 +35,10 @@ namespace tara {
 #ifdef TARA_PGE_EXTENSION
 		void Draw(olc::PixelGameEngine*, olc::vi2d offset = { 0,0 }, olc::vd2d scale = { 1.0,1.0 }, double step = 0.01);
 #endif // TARA_PGE_EXTENSION
+
+		int32_t operator()(int32_t);
+		float   operator()(float);
+		double  operator()(double);
 
 		friend Polynomial operator*(Polynomial, int32_t);
 		friend Polynomial operator*(int32_t, Polynomial);
@@ -56,7 +62,7 @@ namespace tara {
 
 	// ========================Constructors========================
 #pragma region Constructors
-
+	// Copy constructor
 	Polynomial::Polynomial(const Polynomial& p) {
 		deg = p.deg;
 
@@ -171,12 +177,21 @@ namespace tara {
 
 		return out;
 	}
+	float Polynomial::eval(float x) {
+		float out = (float)coeffs[0];
+
+		for (uint32_t i = 1; i <= deg; i++) {
+			out += (float)coeffs[i] * powf(x, (float)i);
+		}
+
+		return out;
+	}
 
 	double Polynomial::eval(double x) {
 		double out = (double)coeffs[0];
 
 		for (uint32_t i = 1; i <= deg; i++) {
-			out += coeffs[i] * pow(x, i);
+			out += (double)coeffs[i] * pow(x, (double)i);
 		}
 
 		return out;
@@ -202,9 +217,10 @@ namespace tara {
 			if (i == 1) out += "x";
 			else if (i > 1) out += "x^" + std::to_string(i);
 		}
-		if (coeffs[0] != 0)
+		if (coeffs[0] != 0) {
 			if (coeffs[0] > 0) out += "+";
 			out += std::to_string(coeffs[0]);
+		}
 		return out;
 	}
 
@@ -219,6 +235,10 @@ namespace tara {
 
 	//	========================Operators==========================
 #pragma region Operators
+	int32_t Polynomial::operator()(int32_t x) { return eval(x); }
+	float   Polynomial::operator()(float x)   { return eval(x); }
+	double  Polynomial::operator()(double x)  { return eval(x); }
+
 	Polynomial operator*(Polynomial p, int32_t alpha) {
 		int32_t* newCoeff = new int32_t[p.deg + 1]();
 		for (uint32_t i = 0; i <= p.deg; i++) {
@@ -286,6 +306,5 @@ namespace tara {
 	}
 #pragma endregion Operators
 
-	
-	
+
 } // namespace tara

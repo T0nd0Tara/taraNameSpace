@@ -136,7 +136,7 @@ namespace tara {
 
 
 
-		T_ operator[](int index) { return arr[index % size]; }
+		T_ operator[](int index) { return get_cell(index); }
 
 		template <typename T__>
 		friend Matrix<T__> operator*(Matrix<T__>, T__);
