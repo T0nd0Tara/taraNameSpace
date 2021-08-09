@@ -277,6 +277,7 @@ T modulu(T x, T m) {
 
 	return x;
 }
+
 // The Chinese Remainder Theorem - returns a value in [0,..., m1 * m2 * ... * mn)
 // DISCLAIMER: DOES NOT CHECK IF MODS ARE PAIRWISE COPRIME
 uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){

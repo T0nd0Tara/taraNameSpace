@@ -60,6 +60,8 @@ namespace tara {
 		Polynomial& operator=(Polynomial);
 	};
 
+	typedef Polynomial Polynom;
+
 	// ========================Constructors========================
 #pragma region Constructors
 	// Copy constructor

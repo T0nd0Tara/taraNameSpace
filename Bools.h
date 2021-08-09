@@ -33,9 +33,9 @@ namespace tara {
         void flip(int index) { inv_val(index); }
 
 
-        std::vector<uint8_t>& get_on();
+        std::vector<uint8_t> get_on();
 
-        std::vector<uint8_t>& get_off();
+        std::vector<uint8_t> get_off();
 
         bool operator[](int);
 
@@ -110,7 +110,7 @@ namespace tara {
         return out;
     }
 
-    std::vector<uint8_t>& Bools::get_on() {
+    std::vector<uint8_t> Bools::get_on() {
         std::vector<uint8_t> out;
 
         for (uint8_t i = 0; i < 8; i++)
@@ -121,7 +121,7 @@ namespace tara {
         return out;
     }
 
-    std::vector<uint8_t>& Bools::get_off() {
+    std::vector<uint8_t> Bools::get_off() {
         std::vector<uint8_t> out;
 
         for (uint8_t i = 0; i < 8; i++)
