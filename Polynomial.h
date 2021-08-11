@@ -36,6 +36,7 @@ namespace tara {
 		void Draw(olc::PixelGameEngine*, olc::vi2d offset = { 0,0 }, olc::vd2d scale = { 1.0,1.0 }, double step = 0.01);
 #endif // TARA_PGE_EXTENSION
 
+		// Evals
 		int32_t operator()(int32_t);
 		float   operator()(float);
 		double  operator()(double);
@@ -43,14 +44,25 @@ namespace tara {
 		friend Polynomial operator*(Polynomial, int32_t);
 		friend Polynomial operator*(int32_t, Polynomial);
 
+		friend Polynomial operator-(Polynomial);
 
+		// +/- Operators
 		friend Polynomial operator+(Polynomial, Polynomial);
 
 		friend Polynomial operator+(Polynomial, int32_t);
 		friend Polynomial operator+(int32_t, Polynomial);
 
+		friend Polynomial operator-(Polynomial, Polynomial);
+
 		friend Polynomial operator-(int32_t, Polynomial);
 		friend Polynomial operator-(Polynomial, int32_t);
+
+		// Strings
+		friend Polynomial operator+(Polynomial, std::string);
+		friend Polynomial operator+(std::string, Polynomial);
+
+		friend Polynomial operator-(Polynomial, std::string);
+		friend Polynomial operator-(std::string, Polynomial);
 
 
 		friend std::ostream& operator<<(std::ostream&, Polynomial);
@@ -208,6 +220,8 @@ namespace tara {
 	}
 
 	std::string Polynomial::str() {
+		if (deg == 0 && coeffs[0] == 0) return "0";
+
 		std::string out = "";
 		for (uint32_t i = deg; i > 0; i--) {
 			if (coeffs[i] == 0) continue;
@@ -248,8 +262,9 @@ namespace tara {
 		}
 		return Polynomial(newCoeff, p.deg);
 	}
-
 	Polynomial operator*(int32_t alpha, Polynomial p) { return p * alpha; }
+
+	Polynomial operator-(Polynomial p) { return -1 * p; }
 
 	Polynomial operator+(Polynomial lhs, Polynomial rhs) {
 		// making sure that lhs.deg > rhs.deg
@@ -277,8 +292,16 @@ namespace tara {
 	}
 	Polynomial operator+(int32_t alpha, Polynomial p) { return p + alpha; }
 
-	Polynomial operator-(int32_t alpha, Polynomial p) { return (-1 * p) + alpha; }
+	Polynomial operator-(Polynomial lhs, Polynomial rhs) { return lhs + (-rhs); };
+
+	Polynomial operator-(int32_t alpha, Polynomial p) { return (-p) + alpha; }
 	Polynomial operator-(Polynomial p, int32_t alpha) { return p + (-alpha); }
+
+	Polynomial operator+(Polynomial p, std::string str) { return p + Polynomial(str); }
+	Polynomial operator+(std::string str, Polynomial p) { return p + Polynomial(str); }
+
+	Polynomial operator-(Polynomial p, std::string str) { return  p - Polynomial(str); }
+	Polynomial operator-(std::string str, Polynomial p) { return -p + Polynomial(str); }
 
 	std::ostream& operator<<(std::ostream& out, Polynomial p) {
 		out << p.str();
