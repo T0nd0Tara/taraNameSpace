@@ -41,6 +41,7 @@ namespace tara {
 		float   operator()(float);
 		double  operator()(double);
 
+		// Multiplicity
 		friend Polynomial operator*(Polynomial, int32_t);
 		friend Polynomial operator*(int32_t, Polynomial);
 
@@ -58,12 +59,13 @@ namespace tara {
 		friend Polynomial operator-(Polynomial, int32_t);
 
 		// Strings
+#ifndef TARA_NO_BOOST
 		friend Polynomial operator+(Polynomial, std::string);
 		friend Polynomial operator+(std::string, Polynomial);
 
 		friend Polynomial operator-(Polynomial, std::string);
 		friend Polynomial operator-(std::string, Polynomial);
-
+#endif
 
 		friend std::ostream& operator<<(std::ostream&, Polynomial);
 
@@ -297,18 +299,18 @@ namespace tara {
 	Polynomial operator-(int32_t alpha, Polynomial p) { return (-p) + alpha; }
 	Polynomial operator-(Polynomial p, int32_t alpha) { return p + (-alpha); }
 
+#ifndef TARA_NO_BOOST
 	Polynomial operator+(Polynomial p, std::string str) { return p + Polynomial(str); }
 	Polynomial operator+(std::string str, Polynomial p) { return p + Polynomial(str); }
 
 	Polynomial operator-(Polynomial p, std::string str) { return  p - Polynomial(str); }
 	Polynomial operator-(std::string str, Polynomial p) { return -p + Polynomial(str); }
+#endif
 
 	std::ostream& operator<<(std::ostream& out, Polynomial p) {
 		out << p.str();
 		return out;
 	}
-
-	
 
 	bool operator==(Polynomial& lhs, Polynomial& rhs) {
 		if (lhs.deg != rhs.deg) return false;
