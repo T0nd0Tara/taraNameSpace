@@ -7,18 +7,23 @@ namespace tara {
 
 	//template <typename T>
 	class Polynomial {
-	private:
+	protected:
 		int32_t* coeffs;
 		uint32_t deg;
+
+#ifndef TARA_NO_BOOST
+		void ConstructByStr(std::string);
+#endif
 
 	public:
 		// Copy constructor
 		Polynomial(const Polynomial&);
-
+		
 		Polynomial(int32_t*, uint32_t);
 
 #ifndef TARA_NO_BOOST
 		Polynomial(std::string);
+		Polynomial(const char*);
 #endif // TARA_NO_BOOST
 
 		~Polynomial();
@@ -72,35 +77,19 @@ namespace tara {
 		friend bool operator==(Polynomial&, Polynomial&);
 
 		Polynomial& operator=(Polynomial);
+
+#ifndef TARA_NO_BOOST
+		Polynomial& operator=(std::string);
+		Polynomial& operator=(const char*);
+#endif
 	};
 
 	typedef Polynomial Polynom;
 
-	// ========================Constructors========================
-#pragma region Constructors
-	// Copy constructor
-	Polynomial::Polynomial(const Polynomial& p) {
-		deg = p.deg;
-
-		coeffs = new int32_t[deg + 1]();
-		for (uint32_t i = 0; i <= deg; i++)
-			coeffs[i] = p.coeffs[i];
-
-	}
-
-	Polynomial::Polynomial(int32_t* setCoeffs, uint32_t setDeg) {
-		deg = setDeg;
-		while (setCoeffs[deg] == 0 && deg > 0) deg--;
-
-		coeffs = new int32_t[deg + 1]();
-		for (uint32_t i = 0; i <= deg; i++) {
-			coeffs[i] = setCoeffs[i];
-		}
-	}
-
-
+	// ======================Protected Funcs=======================
+#pragma region Protected_Funcs
 #ifndef TARA_NO_BOOST
-	Polynomial::Polynomial(std::string in_) {
+	void Polynomial::ConstructByStr(std::string in_) {
 		std::string in = in_;
 
 		std::vector<std::string>* polyTempStr0 = new std::vector<std::string>();
@@ -154,7 +143,7 @@ namespace tara {
 		for (uint32_t i = 0; i < polyTempStr1->size(); i++) {
 			deg = std::max(deg, polyTempPair[i].second);
 		}
-		
+
 
 		coeffs = new int32_t[deg + 1]();
 		for (uint32_t i = 0; i <= deg; i++) coeffs[i] = 0;
@@ -172,6 +161,35 @@ namespace tara {
 		delete[] polyTempStr2;
 		delete[] polyTempPair;
 	}
+#endif // TARA_NO_BOOST
+#pragma endregion Protected_Funcs
+
+	// ========================Constructors========================
+#pragma region Constructors
+	// Copy constructor
+	Polynomial::Polynomial(const Polynomial& p) {
+		deg = p.deg;
+
+		coeffs = new int32_t[deg + 1]();
+		for (uint32_t i = 0; i <= deg; i++)
+			coeffs[i] = p.coeffs[i];
+
+	}
+
+	Polynomial::Polynomial(int32_t* setCoeffs, uint32_t setDeg) {
+		deg = setDeg;
+		while (setCoeffs[deg] == 0 && deg > 0) deg--;
+
+		coeffs = new int32_t[deg + 1]();
+		for (uint32_t i = 0; i <= deg; i++) {
+			coeffs[i] = setCoeffs[i];
+		}
+	}
+
+
+#ifndef TARA_NO_BOOST
+	Polynomial::Polynomial(std::string in_) { ConstructByStr(in_); }
+	Polynomial::Polynomial(const char* in_) { ConstructByStr(std::string(in_)); }
 #endif // TARA_NO_BOOST
 
 	Polynomial::~Polynomial() {
@@ -331,6 +349,18 @@ namespace tara {
 		}
 		return *this;
 	}
+
+#ifndef TARA_NO_BOOST
+	Polynomial& Polynomial::operator=(std::string rhs) {
+		ConstructByStr(rhs);
+		return *this;
+	}
+
+	Polynomial& Polynomial::operator=(const char* rhs) {
+		ConstructByStr(std::string(rhs));
+		return *this;
+	}
+#endif // TARA_NO_BOOST
 #pragma endregion Operators
 
 
