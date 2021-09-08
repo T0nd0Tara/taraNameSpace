@@ -13,7 +13,7 @@ namespace tara {
 
 #ifndef TARA_NO_BOOST
 		void ConstructByStr(std::string);
-#endif
+#endif // TARA_NO_BOOST
 
 	public:
 		// Copy constructor
@@ -70,7 +70,7 @@ namespace tara {
 
 		friend Polynomial operator-(Polynomial, std::string);
 		friend Polynomial operator-(std::string, Polynomial);
-#endif
+#endif // TARA_NO_BOOST
 
 		friend std::ostream& operator<<(std::ostream&, Polynomial);
 
@@ -81,7 +81,7 @@ namespace tara {
 #ifndef TARA_NO_BOOST
 		Polynomial& operator=(std::string);
 		Polynomial& operator=(const char*);
-#endif
+#endif // TARA_NO_BOOST
 	};
 
 	typedef Polynomial Polynom;
@@ -323,7 +323,7 @@ namespace tara {
 
 	Polynomial operator-(Polynomial p, std::string str) { return  p - Polynomial(str); }
 	Polynomial operator-(std::string str, Polynomial p) { return -p + Polynomial(str); }
-#endif
+#endif // TARA_NO_BOOST
 
 	std::ostream& operator<<(std::ostream& out, Polynomial p) {
 		out << p.str();

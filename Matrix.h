@@ -11,11 +11,6 @@ namespace tara {
 		uint32_t width, height, size;
 		T_* arr;
 
-
-		bool _ok = true;
-
-		std::string _Error = "";
-
 	public:
 		// Default Constructor
 		Matrix();
@@ -123,15 +118,8 @@ namespace tara {
 		// checks if value is in the matrix
 		bool is_in(T_);
 
-		// return if the matrix is in an ok stateand
-		// out is an optional argument if you want to see the error if one has occurred
-		bool ok(std::string* out = nullptr) const {
-			if (out != nullptr) *out = _Error;
 
-			return _ok;
-		}
-
-		void setHeightWidth(int, int);
+		void setHeightWidth(uint32_t, uint32_t);
 		std::string get_dim_str();
 
 
@@ -178,22 +166,16 @@ namespace tara {
 	// Default Constructor
 	template <typename T_>
 	Matrix<T_>::Matrix() {
-		_Error = "";
-		_ok = true;
-
 		width = 1;
 		height = 1;
 		size = 1;
-		arr = new T_[size]();
+		arr = new T_[size];
 		arr[0] = T_(0);
 	}
 
 	// Copy Constructor
 	template <typename T_>
 	Matrix<T_>::Matrix(const Matrix<T_>& rhs) {
-		_Error = rhs._Error;
-		_ok = rhs._ok;
-
 		width = rhs.width;
 		height = rhs.height;
 		size = rhs.size;
@@ -207,9 +189,6 @@ namespace tara {
 	// for array
 	template <typename T_>
 	Matrix<T_>::Matrix(uint32_t setWidth, uint32_t setHeight, T_* setArr) {
-		_ok = true;
-		_Error = "";
-
 		width = setWidth;
 		height = setHeight;
 
@@ -227,10 +206,6 @@ namespace tara {
 	// for vector
 	template <typename T_>
 	Matrix<T_>::Matrix(std::vector<T_>* setVec, uint32_t setWidth) {
-		_ok = true;
-		_Error = "";
-
-
 		width = setWidth;
 		height = setVec->size() / setWidth;
 
@@ -247,15 +222,10 @@ namespace tara {
 	// for array of vectors
 	template <typename T_>
 	Matrix<T_>::Matrix(std::vector<T_>* setVec, uint32_t setHeight, bool ArrayOfVectors) {
-		_ok = true;
-		_Error = "";
+		assert(ArrayOfVectors &&
+			"Can not define Matrix type with {std::vector<float>*, int, false} - For array of vector,"
+			" initialize list have to be {std::vector<float>*, int, true} or {std::vector<float>*, int}");
 
-
-		if (!ArrayOfVectors) {
-			_ok = false;
-			_Error += "Can not define Matrix type with {std::vector<float>*, int, false} - For array of vector, initialize list have to be {std::vector<float>*, int, true}\n";
-			return;
-		}
 
 		// making a copy of setVec
 		std::vector<float>* setVecDup = setVec;
@@ -265,12 +235,9 @@ namespace tara {
 		width = setVec->size();
 		for (uint32_t i = 0; i < setHeight - 1; i++) {
 			setVec++;
-			if (width != setVec->size()) {
-				// Error
-				_ok = false;
-				_Error += "Can not have different sized rows inside of Matrix type.\n";
-				return;
-			}
+			assert((width == setVec->size()) &&
+				"Can not have different sized rows inside of Matrix type.");
+			
 		}
 
 
@@ -289,9 +256,6 @@ namespace tara {
 
 	template <typename T_>
 	Matrix<T_>::Matrix(std::vector<std::pair<T_, T_>>* in) {
-		_ok = true;
-		_Error = "";
-
 		width = 2;
 		height = in->size();
 
@@ -306,28 +270,18 @@ namespace tara {
 		}
 	}
 
+	// works only for 1xn or nx1 matrices
 	template <typename T_>
 	Matrix<T_>::Matrix(std::vector<Matrix<T_>> in) {
-		_ok = true;
-		_Error = "";
-
 		std::string modelDim = in[0].get_dim();
 
 		for (Matrix m : in) {
-			if (m.get_width() != 1 && m.get_height() != 1) {
-				_ok = false;
-				_Error = "Cannot construct Matrix of Marices,\nIf the vector got matrix m, such that: m.get_width() != 1 && m.get_height() != 1\n";
-				throw std::invalid_argument(_Error);
-				std::cout << _Error;
-				return;
-			}
-			if (m.get_dim() != modelDim) {
-				_ok = false;
-				_Error = "All matrices got to be the same dimension\n";
-				throw std::invalid_argument(_Error);
-				std::cout << _Error;
-				return;
-			}
+			assert((m.get_width() == 1 || m.get_height() == 1) &&
+				"Cannot construct Matrix of Marices,\nIf the vector got matrix m, such that: m.get_width() != 1 && m.get_height() != 1");
+
+				assert((m.get_dim() == modelDim) &&
+					"All matrices got to be the same dimension");
+			
 		}
 
 
@@ -367,9 +321,6 @@ namespace tara {
 	// sets all of the array to setVal
 	template <typename T_>
 	Matrix<T_>::Matrix(uint32_t setWidth, uint32_t setHeight, T_ setVal) {
-		_ok = true;
-		_Error = "";
-
 		width = setWidth;
 		height = setHeight;
 		size = width * height;
@@ -407,7 +358,7 @@ namespace tara {
 		std::string out = "{";
 		out += addSpace(spaces);
 
-		for (int i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			out += std::to_string(arr[i]);
 
 			if (i + 1 != size) {
@@ -426,7 +377,7 @@ namespace tara {
 	std::vector<T_>* Matrix<T_>::to_vec() {
 		std::vector<T_>* out = new std::vector<T_>();
 
-		for (int i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			out->push_back(arr[i]);
 		}
 
@@ -436,7 +387,7 @@ namespace tara {
 	template <typename T_>
 	T_ Matrix<T_>::sum() {
 		T_ out = (T_)0;
-		for (int i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			out += arr[i];
 		}
 		return out;
@@ -445,7 +396,7 @@ namespace tara {
 	template <typename T_>
 	Matrix<T_> Matrix<T_>::row_sum() {
 		T_* temp_arr = new T_[height];
-		for (int i = 0; i < height; i++) {
+		for (uint32_t i = 0; i < height; i++) {
 			temp_arr[i] = get_row(i).sum();
 		}
 		return Matrix(temp_arr, 1, height);
@@ -454,7 +405,7 @@ namespace tara {
 	template <typename T_>
 	Matrix<T_> Matrix<T_>::col_sum() {
 		T_* temp_arr = new T_[width];
-		for (int i = 0; i < width; i++) {
+		for (uint32_t i = 0; i < width; i++) {
 			temp_arr[i] = get_col(i).sum();
 		}
 		return Matrix<T_>(temp_arr, width, 1);
@@ -462,7 +413,7 @@ namespace tara {
 	template <typename T_>
 	T_ Matrix<T_>::biggest() {
 		T_ b = arr[0];
-		for (int i = 1; i < size; i++) {
+		for (uint32_t i = 1; i < size; i++) {
 			if (arr[i] > b) b = arr[i];
 		}
 		return b;
@@ -470,7 +421,7 @@ namespace tara {
 	template <typename T_>
 	T_ Matrix<T_>::smallest() {
 		T_ s = arr[0];
-		for (int i = 1; i < size; i++) {
+		for (uint32_t i = 1; i < size; i++) {
 			if (arr[i] < s) s = arr[i];
 		}
 		return s;
@@ -478,7 +429,7 @@ namespace tara {
 	template <typename T_>
 	T_ Matrix<T_>::abs_biggest() {
 		T_ b = std::abs(arr[0]);
-		for (int i = 1; i < size; i++) {
+		for (uint32_t i = 1; i < size; i++) {
 			T_ temp = std::abs(arr[i]);
 			if (temp > b) b = temp;
 		}
@@ -509,7 +460,7 @@ namespace tara {
 			return *this;
 
 		float* tempArr = new float[size];
-		for (int i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			tempArr[i] = arr[i] / b;
 		}
 		return Matrix<float>(tempArr, width, height);
@@ -567,24 +518,12 @@ namespace tara {
 
 	template <typename T_>
 	const T_ Matrix<T_>::get_cell(int x, int y) {
-		//if (x + y * width >= size) {
-		//	// Error
-		//	this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
-		//	this->_ok = false;
-		//	return arr[size - 1];
-		//}
 		return arr[modulu((int64_t)x, (int64_t)width) + modulu((int64_t)y, (int64_t)height) * width];
 	}
 
 
 	template <typename T_>
 	const T_ Matrix<T_>::get_cell(uint32_t x, uint32_t y) {
-		//if (x + y * width >= size) {
-		//	// Error
-		//	this->_Error += "Cannot access an indexed cell (x,y) when x + y * width >= Matrix::size.\n";
-		//	this->_ok = false;
-		//	return arr[size - 1];
-		//}
 		return arr[modulu(x, width) + modulu(y, height) * width];
 	}
 
@@ -660,10 +599,9 @@ namespace tara {
 
 	template <typename T_>
 	void Matrix<T_>::set_arr(Matrix<T_>* m) {
-		if (size != m->get_size()) {
-			throw "Cannot set array from different sized Matrices.";
-			return;
-		}
+		assert((size == m->get_size()) &&
+			"Cannot set array from different sized Matrices.");
+		
 		for (uint32_t i = 0; i < size; i++) {
 			arr[i] = m->get_cell(i);
 		}
@@ -692,10 +630,20 @@ namespace tara {
 	}
 	
 	template <typename T_>
-	void Matrix<T_>::setHeightWidth(int setHeight, int setWidth) {
+	void Matrix<T_>::setHeightWidth(uint32_t setHeight, uint32_t setWidth) {
 
 		width = setWidth;
 		height = setHeight;
+		
+		T_* newArr = new T_[width * height];
+		for (uint32_t i = 0; i < size; i++) {
+			newArr[i] = arr[i];
+		}
+		for (uint32_t i = size; i < width * height; i++) {
+			newArr[i] = NULL;
+		}
+		delete[] arr;
+		arr = newArr;
 		size = width * height;
 	}
 
@@ -725,15 +673,10 @@ namespace tara {
 	}
 	template <typename T_>
 	Matrix<T_> operator*(Matrix<T_> a, Matrix<T_> b) {
-		if (b.get_height() != a.get_width()) {
-			// Error
-
-			std::cout << "Matrix mult error: b.height != a.width";
-			throw std::invalid_argument("Matrix mult error: b.height != a.width : b.height = "
-				+ std::to_string(b.get_height()) + "; a.width = " + std::to_string(a.get_width()));
-
-			return a;
-		}
+		assert((b.get_height() == a.get_width()) &&
+			"Matrix mult error : b.height != a.width : b.height = "
+			+ std::to_string(b.get_height()) + "; a.width = " + std::to_string(a.get_width()));
+		
 
 
 		T_* out = new T_[a.get_height() * b.get_width()];
@@ -766,15 +709,11 @@ namespace tara {
 
 	template <typename T_>
 	Matrix<T_> operator+(Matrix<T_> a, Matrix<T_> b) {
-		if (a.height != b.height && std::min(a.height, b.height) > 1) {
-			throw std::invalid_argument("Can not add matrices if heights are different, and no height is 1.");
-			return a;
-		}
+		assert((a.height == b.height || std::min(a.height, b.height) == 1) &&
+			"Can not add matrices if heights are different, and no height is 1.");
+		assert((a.width == b.width || std::min(a.width, b.width) == 1) &&
+			"Can not add matrices if widths are different, and no width is 1.");
 
-		if (a.width != b.width && std::min(a.width, b.width) > 1) {
-			throw std::invalid_argument("Can not add matrices if widths are different, and no width is 1.");
-			return a;
-		}
 
 		if (a.height == b.height && a.width == b.width) {
 			T_* newArr = new T_[a.size];

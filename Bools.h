@@ -5,7 +5,7 @@
 // This class is a way to utilize all of your memory with booleans
 // 
 // Every regular bool takes 1 whole byte, therefore 8 bools will take up 8 bytes
-// tara::Bools make it so you can use 8 bools in 1 byte
+// tara::Bools make it easy to use 8 bools in 1 byte
 
 namespace tara {
 

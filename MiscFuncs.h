@@ -8,7 +8,7 @@ char btoc(bool b) {
 	return '0';
 }
 
-// bool to char
+// bool to string
 std::string btos(bool b) {
 	if (b) return "1";
 	return "0";
@@ -31,7 +31,7 @@ inline T dotProd(std::vector<T>* a, std::vector<T>* b) {
 	if (a->size() != b->size()) {
 		throw std::invalid_argument("Cannot do dot product with to different sized arrays");
 		std::cout << "An 'std::invalid_argument' error has occured in dotProd.\n";
-		return 0.0f;
+		return (T)0;
 	}
 
 	T sum = (T)0;
@@ -41,13 +41,22 @@ inline T dotProd(std::vector<T>* a, std::vector<T>* b) {
 	return sum;
 }
 
+// Returns an array of which each element is the dot product of the two corresponding vectors
+// 
+// if the 'out' parameter is defined, the output will be 'out'
+// and the array will be at that location
 template <typename T>
-inline void dotProd(std::vector<T>* a, std::vector<T>* b, int size, T* out) {
+inline T* dotProd(std::vector<T>* a, std::vector<T>* b, uint32_t size, T* out = nullptr) {
+	T* _out;
+	if (out == nullptr) _out = new T[size];
+	else _out = out;
+
 	for (int i = 0; i < size; i++) {
-		*out = dotProd(a, b);
-		out++;
+		*_out = dotProd(a, b);
+		_out++;
 		a++;
 	}
+	return _out;
 }
 
 template <typename T>
@@ -166,8 +175,8 @@ inline float rand_1_1() {
 }
 
 // return a random array with each element v: -1<=v<=1
-inline void randArr(float* out, int size) { 
-	for (int i = 0; i < size; i++) {
+inline void randArr(float* out, uint32_t size) { 
+	for (uint32_t i = 0; i < size; i++) {
 		*out = 2.0f * rand0_1() - 1.0f;
 		out++;
 	}
