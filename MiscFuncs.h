@@ -35,7 +35,7 @@ inline T dotProd(std::vector<T>* a, std::vector<T>* b) {
 	}
 
 	T sum = (T)0;
-	for (int i = 0; i < (a->size()); i++)
+	for (uint32_t i = 0; i < (a->size()); i++)
 		sum += (*a)[i] * (*b)[i];
 
 	return sum;
@@ -51,7 +51,7 @@ inline T* dotProd(std::vector<T>* a, std::vector<T>* b, uint32_t size, T* out = 
 	if (out == nullptr) _out = new T[size];
 	else _out = out;
 
-	for (int i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		*_out = dotProd(a, b);
 		_out++;
 		a++;
@@ -61,7 +61,7 @@ inline T* dotProd(std::vector<T>* a, std::vector<T>* b, uint32_t size, T* out = 
 
 template <typename T>
 inline void vecToArr(std::vector<T>* in, T* out) {
-	for (int i = 0; i < in->size(); i++) {
+	for (uint32_t i = 0; i < in->size(); i++) {
 		out[i] = (*in)[i];
 	}
 }
@@ -69,12 +69,12 @@ inline void vecToArr(std::vector<T>* in, T* out) {
 template <typename T>
 inline int len(T);
 
-inline std::string addSpace(int);
+inline std::string addSpace(uint32_t);
 
 template <typename T>
-inline std::string arrToString(T* in, int size) { // doesn't drop
+inline std::string arrToString(T* in, uint32_t size) { // doesn't drop
 	std::string out = "{";
-	for (int i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		out += std::to_string(*in);
 		in++;
 		if (i + 1 != size)
@@ -86,9 +86,9 @@ inline std::string arrToString(T* in, int size) { // doesn't drop
 
 
 template <typename T>
-inline std::string arrToString(T* in, int size, int drop) {
+inline std::string arrToString(T* in, uint32_t size, uint32_t drop) {
 	std::string out = "{ ";
-	for (int i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		out += std::to_string(in[i]);
 
 		if (i + 1 != size) {
@@ -108,7 +108,7 @@ inline std::string vecToString(std::vector<T>* in) {
 	std::string out = "{";
 
 	
-	for (int i = 0; i < in->size(); i++) {
+	for (uint32_t i = 0; i < in->size(); i++) {
 		out += std::to_string((*in)[i]);
 		if (i + 1 != in->size())
 			out += ',' + addSpace(11 - len((*in)[i+1]));
@@ -118,20 +118,20 @@ inline std::string vecToString(std::vector<T>* in) {
 	return out;
 }
 
-inline std::string addTabs(int n) {
+inline std::string addTabs(uint32_t n) {
 	std::string out;
-	for (int indT = 0; indT < n; indT++) out += '\t';
+	for (uint32_t indT = 0; indT < n; indT++) out += '\t';
 	return out;
 }
 
-inline std::string addSpace(int n) {
+inline std::string addSpace(uint32_t n) {
 	std::string out;
-	for (int indT = 0; indT < n; indT++) out += ' ';
+	for (uint32_t indT = 0; indT < n; indT++) out += ' ';
 	return out;
 }
 
 template <typename T>
-inline void Transpose(float* io, int size, int new_line) {
+inline void Transpose(float* io, uint32_t size, uint32_t new_line) {
 	if (size % new_line != 0) {
 		std::cout << "An error has occured in Transpose.\n";
 		return;
@@ -139,16 +139,16 @@ inline void Transpose(float* io, int size, int new_line) {
 	T* temp_out = new T[size];
 
 	
-	for (int y = 0; y < size / new_line; y++) {
-		for (int x = 0; x < new_line; x++) {
+	for (uint32_t y = 0; y < size / new_line; y++) {
+		for (uint32_t x = 0; x < new_line; x++) {
 			temp_out[x + new_line * y] = io[y + new_line * x];
 		}
 	}
 
 
 	// puting back temp_out into io
-	for (int y = 0; y < size / new_line; y++) {
-		for (int x = 0; x < new_line; x++) {
+	for (uint32_t y = 0; y < size / new_line; y++) {
+		for (uint32_t x = 0; x < new_line; x++) {
 			io[x + y * new_line] = temp_out[x + y * new_line];
 		}
 	}
@@ -177,8 +177,7 @@ inline float rand_1_1() {
 // return a random array with each element v: -1<=v<=1
 inline void randArr(float* out, uint32_t size) { 
 	for (uint32_t i = 0; i < size; i++) {
-		*out = 2.0f * rand0_1() - 1.0f;
-		out++;
+		out[i] = rand_1_1();
 	}
 }
 
@@ -191,11 +190,11 @@ inline std::pair<To, To> convert(const std::pair<From, From> p) {
 }
 
 template<typename From, typename To>
-inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pair<To, To>>* out, int _array = 1) {
-	for (int arr = 0; arr < _array; arr++) {
+inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pair<To, To>>* out, uint32_t _array = 1) {
+	for (uint32_t arr = 0; arr < _array; arr++) {
 		out->resize(in->size());
 
-		for (int i = 0; i < in->size(); i++)
+		for (uint32_t i = 0; i < in->size(); i++)
 			(*out)[i] = convert<To>((*in)[i]);
 
 		in++;
