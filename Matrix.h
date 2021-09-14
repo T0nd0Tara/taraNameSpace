@@ -800,9 +800,6 @@ namespace tara {
 	Matrix<T_>& Matrix<T_>::operator=(Matrix<T_> rhs) {
 		delete[] arr;
 
-		_Error = rhs._Error;
-		_ok = rhs._ok;
-
 		width = rhs.width;
 		height = rhs.height;
 		size = rhs.size;

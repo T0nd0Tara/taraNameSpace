@@ -202,6 +202,26 @@ inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pai
 	}
 }
 
+
+
+
+#pragma region olc::pge
+#ifdef TARA_PGE_EXTENSION
+template<typename T>
+inline T min(olc::v2d_generic<T> vec) {
+	if (vec.x < vec.y) return vec.x;
+	return vec.y;
+}
+
+template<typename T>
+inline T max(olc::v2d_generic<T> vec) {
+	if (vec.x > vec.y) return vec.x;
+	return vec.y;
+}
+#endif // TARA_PGE_EXTENSION
+#pragma endregion olc::pge
+
+
 #pragma region is_in
 
 // Checks if element is in an array
