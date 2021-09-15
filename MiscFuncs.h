@@ -227,7 +227,7 @@ inline T max(olc::v2d_generic<T> vec) {
 // Checks if element is in an array
 template<typename T>
 bool is_in(T* arr, uint32_t arrSize, T elem) {
-	for (uint32_t i = 0; i < arrSize; i++)
+	for (uint32_t i = 0U; i < arrSize; i++)
 		if (arr[i] == elem) return true;
 		
 	return false;
@@ -235,9 +235,10 @@ bool is_in(T* arr, uint32_t arrSize, T elem) {
 
 // Checks if element is in a vector
 template<typename T>
-bool is_in(std::vector<T> vec, T elem) {
-	for (T test : vec) {
-		if (test == elem) return true;
+bool is_in(std::vector<T> vec, T elem, uint32_t start = 0U, uint32_t end = 0U) {
+	if (end == 0U) end = vec.size();
+	for (uint32_t i = start; i < end; i++) {
+		if (vec[i] == elem) return true;
 	}
 	return false;
 }
@@ -245,7 +246,7 @@ bool is_in(std::vector<T> vec, T elem) {
 // Checks if element is in an array of vectors
 template<typename T>
 bool is_in(std::vector<T>* vec, uint32_t arrSize, T elem) {
-	for (uint32_t i=0; i<arrSize; i++)
+	for (uint32_t i=0U; i<arrSize; i++)
 		for (T test : vec[i]) {
 			if (test == elem) return true;
 		}
