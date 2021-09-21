@@ -63,3 +63,8 @@ Updates:
 #include "..\Matrix.h"
 #include "..\Bools.h"
 
+// Encoding.h has global variables that take up memory
+// Which might not be a good idea for applications on small machines
+#ifndef TARA_NO_ENCODING
+#include "..\Encoding.h"
+#endif
