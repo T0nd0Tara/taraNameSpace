@@ -4,8 +4,8 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <math.h>
 #include <cassert>
+#include <math.h>
 
 #ifndef TARA_NO_BOOST
 #include <boost/algorithm/string/classification.hpp>

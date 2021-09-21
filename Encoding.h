@@ -80,7 +80,7 @@ namespace tara {
         uint32_t out = 0;
         for (uint32_t i = 0; i < str.length(); i++) {
             assert(decoder32.at(str[i]) != std::out_of_range &&
-                    "A wrong character was inserted. It is not part of Crockford's Base32");
+                   "A wrong character was inserted. It is not part of Crockford's Base32");
             out += decoder32.at(str[i]) * powi(32, str.length() - i - 1);
         }
         return out;

@@ -22,7 +22,6 @@ namespace tara {
         void inv_val(int);
 
         void set_val(int, bool);
-
         
 
         std::string str();
