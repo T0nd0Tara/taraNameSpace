@@ -119,7 +119,6 @@ namespace tara {
             if (get_val(i))
                 out.push_back(i);
 
-
         return out;
     }
 
@@ -129,7 +128,6 @@ namespace tara {
         for (uint8_t i = 0; i < 8; i++)
             if (!get_val(i))
                 out.push_back(i);
-
 
         return out;
     }
