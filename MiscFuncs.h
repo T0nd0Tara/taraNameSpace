@@ -158,7 +158,7 @@ inline void Transpose(float* io, uint32_t size, uint32_t new_line) {
 }
 
 template <typename T>
-inline int len(T in) {
+inline uint32_t len(T in) {
 	return std::to_string(in).length();
 }
 
@@ -183,6 +183,7 @@ inline void randArr(float* out, uint32_t size) {
 
 #pragma endregion Random
 
+#pragma region convert
 template<typename To, typename From>
 inline std::pair<To, To> convert(const std::pair<From, From> p) {
 	return std::make_pair(static_cast<To>(p.first),
@@ -201,6 +202,7 @@ inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pai
 		out++;
 	}
 }
+#pragma endregion convert
 
 #pragma region olc::pge
 #ifdef TARA_PGE_EXTENSION
@@ -217,7 +219,6 @@ inline T max(olc::v2d_generic<T> vec) {
 }
 #endif // TARA_PGE_EXTENSION
 #pragma endregion olc::pge
-
 
 #pragma region is_in
 
