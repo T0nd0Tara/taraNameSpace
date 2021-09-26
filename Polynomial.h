@@ -86,6 +86,7 @@ namespace tara {
 
 	typedef Polynomial Polynom;
 
+
 	// ======================Protected Funcs=======================
 #pragma region Protected_Funcs
 #ifndef TARA_NO_BOOST

@@ -202,9 +202,6 @@ inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pai
 	}
 }
 
-
-
-
 #pragma region olc::pge
 #ifdef TARA_PGE_EXTENSION
 template<typename T>
@@ -261,14 +258,12 @@ bool pyReplace(std::string& str, const std::string& from, const std::string& to)
 	bool beenReplaced = false;
 	size_t start_pos = str.find(from);
 	while (start_pos != std::string::npos) {
-		//std::cout << str << ";  " << start_pos << "\n";
 		str.replace(start_pos, from.length(), to);
 		beenReplaced = true;
 		
 		start_pos = str.find(from, start_pos + to.length());
 	}
-	//std::cout << "finished loop\n";
-	//std::cout << str << ";  " << start_pos << "\n";
+
 	return beenReplaced;
 }
 
