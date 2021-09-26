@@ -101,7 +101,7 @@ namespace tara {
 
     std::string Bools::str() {
         std::string out =
-            btos(get_val(7))
+              btos(get_val(7))
             + btos(get_val(6))
             + btos(get_val(5))
             + btos(get_val(4))

@@ -6,7 +6,7 @@
 namespace tara {
 #pragma region Crockfords Base32
 
-    extern const std::map<char, uint32_t> decoder32 = {
+    inline const std::map<char, uint32_t> decoder32 = {
         {'0', 0}, {'O', 0}, {'o', 0},
         {'1', 1}, {'I', 1}, {'i', 1}, {'L', 1}, {'l', 1},
         {'2', 2},
@@ -41,7 +41,7 @@ namespace tara {
         {'Z', 31}, {'z', 31}
     };
 
-    extern const std::map<uint8_t, char>  encoder32 = {
+    inline const std::map<uint8_t, char>  encoder32 = {
         {0,  '0'},
         {1,  '1'},
         {2,  '2'},
@@ -79,19 +79,23 @@ namespace tara {
     uint32_t decoding32(std::string str) {
         uint32_t out = 0;
         for (uint32_t i = 0; i < str.length(); i++) {
-            assert(decoder32.at(str[i]) != std::out_of_range &&
-                   "A wrong character was inserted. It is not part of Crockford's Base32");
-            out += decoder32.at(str[i]) * powi(32, str.length() - i - 1);
+            try {
+                out += decoder32.at(str[i]) * powi(32, str.length() - i - 1);
+            } catch(std::out_of_range e) {
+                assert(false &&
+                    "A wrong character was inserted. It is not part of Crockford's Base32");
+            }
         }
         return out;
-    }
-
+    } 
     std::string encoding32(uint32_t num) {
         if (num == 0) return "0";
 
         std::string out = "";
         while (num != 0) {
             out.insert(0, std::string(1, encoder32.at(num % 32)));
+
+            //num = num >> 5;
             num = num / 32;
         }
         return out;
