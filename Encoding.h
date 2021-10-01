@@ -2,11 +2,14 @@
 
 #include "Headers.h"
 #include "MiscFuncs.h"
- 
+
 namespace tara {
 #pragma region Crockfords Base32
-
-    inline const std::map<char, uint32_t> decoder32 = {
+// only cpp17 and above support inline variables
+#if __cplusplus >= 201703L
+    inline
+#endif
+    const std::map<char, uint32_t> decoder32 = {
         {'0', 0}, {'O', 0}, {'o', 0},
         {'1', 1}, {'I', 1}, {'i', 1}, {'L', 1}, {'l', 1},
         {'2', 2},
@@ -41,7 +44,10 @@ namespace tara {
         {'Z', 31}, {'z', 31}
     };
 
-    inline const std::map<uint8_t, char>  encoder32 = {
+#if __cplusplus >= 201703L
+    inline
+#endif
+    const std::map<uint8_t, char>  encoder32 = {
         {0,  '0'},
         {1,  '1'},
         {2,  '2'},
@@ -81,9 +87,8 @@ namespace tara {
         for (uint32_t i = 0; i < str.length(); i++) {
             try {
                 out += decoder32.at(str[i]) * powi(32, str.length() - i - 1);
-            } catch(std::out_of_range e) {
-                assert(false &&
-                    "A wrong character was inserted. It is not part of Crockford's Base32");
+            } catch(std::out_of_range& e) {
+                printError("A wrong character was inserted. '" + std::string(1 ,str[i]) + "' is not part of Crockford's Base32", &e);
             }
         }
         return out;
@@ -101,5 +106,69 @@ namespace tara {
         return out;
 
     }
+
+    // a 8 character in 5 bit chars
+    // every char is in base 32
+    class word32 {
+    protected:
+        uint32_t main;
+        uint8_t  e;
+
+        void ConstructByStr(std::string in) {
+            if (in.length() > 8)
+                in = in.substr(0U, 8);
+            else while (in.length() < 8) {
+                in.insert(in.begin(), '0');
+            }
+
+
+            e = decoder32.at(in[0]) << 3;
+            e |= decoder32.at(in[1]) >> 2;
+
+            main = decoder32.at(in[1]) << 30;
+            main |= decoder32.at(in[2]) << 25;
+            main |= decoder32.at(in[3]) << 20;
+            main |= decoder32.at(in[4]) << 15;
+            main |= decoder32.at(in[5]) << 10;
+            main |= decoder32.at(in[6]) << 5;
+            main |= decoder32.at(in[7]);
+        }
+
+    public:
+        word32() {
+            main = 0U;
+            e = 0U;
+        }
+
+        word32(std::string in) {
+            ConstructByStr(in);
+        }
+
+        word32(uint32_t in) {
+            ConstructByStr(encoding32(in));
+        }
+
+        std::string to_str() {
+            std::string out =
+                      std::string(1, encoder32.at(e >> 3))
+                    + std::string(1, encoder32.at(((e & 0b111) << 2) | (main >> 30)))
+                    + std::string(1, encoder32.at((main >> 25) & 0x1F)) // 0x1F == 0b11111
+                    + std::string(1, encoder32.at((main >> 20) & 0x1F))
+                    + std::string(1, encoder32.at((main >> 15) & 0x1F))
+                    + std::string(1, encoder32.at((main >> 10) & 0x1F))
+                    + std::string(1, encoder32.at((main >> 5)  & 0x1F))
+                    + std::string(1, encoder32.at((main >> 0)  & 0x1F));
+
+
+            return out;
+        }
+
+        const char* c_str() {
+            return to_str().c_str();
+        }
+
+
+
+    };
 #pragma endregion
 }
