@@ -332,3 +332,13 @@ uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){
 
 }
 #pragma endregion Number_Theory
+
+void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, bool printInCout = false) {
+	std::string print = description;
+	if (error != nullptr) print += ": " + std::string(typeid(*error).name());
+
+	if (printInCout) std::cout << print << '\n';
+	else			 std::cerr << print << '\n';
+
+	if (abortProgram) abort();
+}
