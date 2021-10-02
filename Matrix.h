@@ -808,6 +808,7 @@ namespace tara {
 		for (uint32_t i = 0; i < size; i++) {
 			arr[i] = rhs.arr[i];
 		}
+		return *this;
 	}
 #pragma endregion Operators
 
