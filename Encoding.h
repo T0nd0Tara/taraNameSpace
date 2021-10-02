@@ -123,7 +123,7 @@ namespace tara {
         void set_char(uint8_t val, uint8_t index);
     public:
         word32();
-        word32(word32);
+        word32(const word32&);
         word32(std::string in);
         word32(uint32_t in);
 
@@ -132,7 +132,7 @@ namespace tara {
         std::string to_str();
         const char* c_str();
 
-        word32& operator=(word32);
+        word32& operator=(word32&);
         word32& operator=(std::string);
         word32& operator=(uint32_t);
 
@@ -152,7 +152,7 @@ namespace tara {
         e = 0U;
     }
 
-    word32::word32(word32 in) {
+    word32::word32(const word32& in) {
         a = in.a;
         b = in.b;
         c = in.c;
@@ -274,7 +274,7 @@ namespace tara {
 
     // =========================Operators==========================
 #pragma region Operators
-    word32& word32::operator=(word32 in) {
+    word32& word32::operator=(word32& in) {
         a = in.a;
         b = in.b;
         c = in.c;
