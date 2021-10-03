@@ -82,9 +82,9 @@ namespace tara {
         {31, 'Z'},
     };
 
-    uint32_t decoding32(std::string str) {
-        uint32_t out = 0;
-        for (uint32_t i = 0; i < str.length(); i++) {
+    size_t decoding32(std::string str) {
+        size_t out = 0;
+        for (size_t i = 0; i < str.length(); i++) {
             try {
                 out += decoder32.at(str[i]) * powi(32, str.length() - i - 1);
             } catch(std::out_of_range& e) {
@@ -93,7 +93,7 @@ namespace tara {
         }
         return out;
     } 
-    std::string encoding32(uint32_t num) {
+    std::string encoding32(size_t num) {
         if (num == 0) return "0";
 
         std::string out = "";
@@ -124,8 +124,9 @@ namespace tara {
     public:
         word32();
         word32(const word32&);
+        word32(uint8_t e, uint8_t d, uint8_t c, uint8_t b, uint8_t a);
         word32(std::string in);
-        word32(uint32_t in);
+        word32(size_t in);
 
         uint8_t get_char(uint8_t index);
 
@@ -134,7 +135,17 @@ namespace tara {
 
         word32& operator=(word32&);
         word32& operator=(std::string);
-        word32& operator=(uint32_t);
+        word32& operator=(size_t);
+
+        word32  operator|(uint64_t);
+        word32  operator&(uint64_t);
+        word32  operator^(uint64_t);
+
+        friend word32 operator|(word32, word32);
+        friend word32 operator&(word32, word32);
+        friend word32 operator^(word32, word32);
+
+        uint8_t operator[](uint8_t index) { return get_char(index); }
 
         friend std::ostream& operator<<(std::ostream& out, word32 a) {
             out << a.to_str();
@@ -159,11 +170,18 @@ namespace tara {
         d = in.d;
         e = in.e;
     }
+    word32::word32(uint8_t e_, uint8_t d_, uint8_t c_, uint8_t b_, uint8_t a_) {
+        this->e = e_;
+        this->d = d_;
+        this->c = c_;
+        this->b = b_;
+        this->a = a_;
+    }
     word32::word32(std::string in) {
         ConstructByStr(in);
     }
 
-    word32::word32(uint32_t in) {
+    word32::word32(size_t in) {
         ConstructByStr(encoding32(in));
     }
 #pragma endregion
@@ -189,8 +207,8 @@ namespace tara {
     }
 
     void word32::set_char(uint8_t val, uint8_t index) {
-        val = (uint8_t)modulu((uint16_t)val, (uint16_t)32);
-        switch (modulu((uint8_t)index, (uint8_t)8)) {
+        val = modulu(val, (uint8_t)32);
+        switch (modulu(index, (uint8_t)8)) {
         case 0:
             a = (a & 0xE0) | val;
             return;
@@ -227,7 +245,7 @@ namespace tara {
     }
 
     uint8_t word32::get_char(uint8_t index) {
-        switch (modulu((uint8_t)index, (uint8_t)8)) {
+        switch (modulu(index, (uint8_t)8)) {
         case 0:
             return a & 0x1F;
         case 1:
@@ -246,7 +264,7 @@ namespace tara {
             return e >> 3;
         }
         printError("modulu returned value "
-            + std::to_string(modulu((uint8_t)index, (uint8_t)8))
+            + std::to_string(modulu(index, (uint8_t)8))
             + ", which is not between 0 and 7.\nPlease contact develepors if you encounter this error.\n");
 
         // to not have a warning :b
@@ -254,16 +272,21 @@ namespace tara {
     }
 
     std::string word32::to_str() {
-        std::string out =
-            std::string(1, encoder32.at(get_char(7)))
-            + std::string(1, encoder32.at(get_char(6)))
-            + std::string(1, encoder32.at(get_char(5)))
-            + std::string(1, encoder32.at(get_char(4)))
-            + std::string(1, encoder32.at(get_char(3)))
-            + std::string(1, encoder32.at(get_char(2)))
-            + std::string(1, encoder32.at(get_char(1)))
-            + std::string(1, encoder32.at(get_char(0)));
-
+        std::string out = "";
+        try {
+            out =
+                  std::string(1, encoder32.at(get_char(7)))
+                + std::string(1, encoder32.at(get_char(6)))
+                + std::string(1, encoder32.at(get_char(5)))
+                + std::string(1, encoder32.at(get_char(4)))
+                + std::string(1, encoder32.at(get_char(3)))
+                + std::string(1, encoder32.at(get_char(2)))
+                + std::string(1, encoder32.at(get_char(1)))
+                + std::string(1, encoder32.at(get_char(0)));
+        }
+        catch (std::exception& e) {
+            printError("Can't convert to string", &e);
+        }
         return out;
     }
 
@@ -287,9 +310,67 @@ namespace tara {
         return *this;
     }
 
-    word32& word32::operator=(uint32_t in) {
+    word32& word32::operator=(size_t in) {
         ConstructByStr(encoding32(in));
         return *this;
+    }
+
+    word32 word32::operator|(uint64_t val) {
+        return word32(
+            e | ((val >> 32) & 0xFF),
+            d | ((val >> 24) & 0xFF),
+            c | ((val >> 16) & 0xFF),
+            b | ((val >> 8 ) & 0xFF),
+            a | ((val >> 0 ) & 0xFF)
+        );
+    }
+
+    word32 word32::operator&(uint64_t val) {
+        return word32(
+            e & ((val >> 32) & 0xFF),
+            d & ((val >> 24) & 0xFF),
+            c & ((val >> 16) & 0xFF),
+            b & ((val >> 8 ) & 0xFF),
+            a & ((val >> 0 ) & 0xFF)
+        );
+    }
+
+    word32 word32::operator^(uint64_t val) {
+        return word32(
+            e ^ ((val >> 32) & 0xFF),
+            d ^ ((val >> 24) & 0xFF),
+            c ^ ((val >> 16) & 0xFF),
+            b ^ ((val >> 8 ) & 0xFF),
+            a ^ ((val >> 0 ) & 0xFF)
+        );
+    }
+
+    word32 operator|(word32 lhs, word32 rhs) {
+        return word32(
+            lhs.e | rhs.e,
+            lhs.d | rhs.d,
+            lhs.c | rhs.c,
+            lhs.b | rhs.b,
+            lhs.a | rhs.a
+        );
+    }
+    word32 operator&(word32 lhs, word32 rhs) {
+        return word32(
+            lhs.e & rhs.e,
+            lhs.d & rhs.d,
+            lhs.c & rhs.c,
+            lhs.b & rhs.b,
+            lhs.a & rhs.a
+            );
+    }
+    word32 operator^(word32 lhs, word32 rhs) {
+        return word32(
+            lhs.e ^ rhs.e,
+            lhs.d ^ rhs.d,
+            lhs.c ^ rhs.c,
+            lhs.b ^ rhs.b,
+            lhs.a ^ rhs.a
+            );
     }
 #pragma endregion
 #pragma endregion Crockfords Base32
