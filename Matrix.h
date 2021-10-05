@@ -64,50 +64,67 @@ namespace tara {
 		// gets a collumn and convert it to a vector
 		std::vector<T_>* get_colVec(uint32_t);
 
+		// The cell metods  are if you want to get a refrance
+		// insted of getters and setters
+
+		// cell through index of the array
+		T_& cell(int64_t);
+		// cell through (x,y) cords
+		T_& cell(int64_t, int64_t);
+		// cell through (x,y) cords
+		T_& cell(uint32_t, uint32_t);
+		// cell through std::pair(x,y) cords
+		T_& cell(std::pair<int, int>);
+		// cell through std::pair(x,y) cords
+		T_& cell(std::pair<uint32_t, uint32_t>);
+
+
+#ifdef TARA_PGE_EXTENSION
+		// cell through olc::vi2d(x,y) cords
+		T_& cell(olc::vi2d);
+		// cell through olc::vu2d(x,y) cords
+		T_& cell(olc::vu2d);
+#endif // TARA_PGE_EXTENSION
+
 		// get cell through index of the array
-		const T_ get_cell(int);
-		// get cell through index of the array
-		const T_ get_cell(uint32_t);
+		const T_ get_cell(int64_t i) { return cell(i); }
 		// get cell through (x,y) cords
-		const T_ get_cell(int, int);
+		const T_ get_cell(int64_t x, int64_t y) { return cell(x, y); }
 		// get cell through (x,y) cords
-		const T_ get_cell(uint32_t, uint32_t);
+		const T_ get_cell(uint32_t x, uint32_t y) { return cell(x, y); }
 		// get cell through std::pair(x,y) cords
-		const T_ get_cell(std::pair<int,int>);
+		const T_ get_cell(std::pair<int, int> cords) { return cell(cords); }
 		// get cell through std::pair(x,y) cords
-		const T_ get_cell(std::pair<uint32_t,uint32_t>);
+		const T_ get_cell(std::pair<uint32_t, uint32_t> cords) { return cell(cords); }
 
 
 #ifdef TARA_PGE_EXTENSION
 		// get cell through olc::vi2d(x,y) cords
-		const T_ get_cell (olc::vi2d) const;
+		const T_ get_cell(olc::vi2d cords) { return cell(cords); }
 		// get cell through olc::vu2d(x,y) cords
-		const T_ get_cell (olc::vu2d) const;
+		const T_ get_cell(olc::vu2d cords) { return cell(cords); }
 		// get dimensions of the matrix by olc::vu2d(width, height)
-		const olc::vu2d get_dim() const;
+		const olc::vu2d get_dim() { return olc::vu2d(width, height); }
 
 #endif // TARA_PGE_EXTENSION
 
 		// set cell through index of the array
-		void set_cell(int, T_);
-		// set cell through index of the array
-		void set_cell(uint32_t, T_);
+		void set_cell(int64_t i, T_ val) { cell(i) = val; }
 		// set cell through (x,y) cords
-		void set_cell(int, int, T_);
+		void set_cell(int x, int y, T_ val) { cell(x, y) = val; }
 		// set cell through (x,y) cords
-		void set_cell(uint32_t, uint32_t, T_);
+		void set_cell(uint32_t x, uint32_t y, T_ val) { cell(x, y) = val; }
 		// set cell through std::pair(x,y) cords
-		void set_cell(std::pair<int,int> , T_);
+		void set_cell(std::pair<int, int> cords, T_ val) { cell(cords) = val; }
 		// set cell through std::pair(x,y) cords
-		void set_cell(std::pair<uint32_t, uint32_t>, T_);
+		void set_cell(std::pair<uint32_t, uint32_t> cords, T_ val) { cell(cords) = val; }
 
 #ifdef TARA_PGE_EXTENSION
 		// set cell through olc::vi2d(x,y) cords
-		void set_cell(olc::vi2d, T_);
+		void set_cell(olc::vi2d cords, T_ val) { cell(cords) = val; }
 		// set cell through olc::vu2d(x,y) cords
-		void set_cell(olc::vu2d, T_);
+		void set_cell(olc::vu2d cords, T_ val) { cell(cords) = val; }
 #endif // TARA_PGE_EXTENSION
-
 		
 		// set array from a different Matrix
 		void set_arr(Matrix<T_>*);
@@ -124,7 +141,10 @@ namespace tara {
 
 
 
-		T_ operator[](int index) { return get_cell(index); }
+		T_& operator[](int index) { return cell(index); }
+#ifdef TARA_PGE_EXTENSION
+		T_& operator[](olc::vi2d cords) { return cell(cords.x, cords.y); }
+#endif // TARA_PGE_EXTENSION
 
 		template <typename T__>
 		friend Matrix<T__> operator*(Matrix<T__>, T__);
@@ -495,107 +515,47 @@ namespace tara {
 		return get_col(ind).to_vec();
 	}
 
-	template <typename T_>
-	const T_ Matrix<T_>::get_cell(int i){
-		//if (i < 0) { // euiv to mod size
-		//	do {
-		//		i += size;
-		//	} while (i < 0);
-		//}
-		//else if (i >= size) {
-		//	do {
-		//		i -= size;
-		//	} while (i >= size);
-		//}
-		
-		return arr[modulu((int64_t)i, (int64_t)size)];
-	}
 
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell(uint32_t i) {
-		return arr[modulu(i, size)];
-	}
-
-	template <typename T_>
-	const T_ Matrix<T_>::get_cell(int x, int y) {
-		return arr[modulu((int64_t)x, (int64_t)width) + modulu((int64_t)y, (int64_t)height) * width];
+	T_& Matrix<T_>::cell(int64_t i) {
+		return arr[modulu(i, (int64_t)size)];
 	}
 
 
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell(uint32_t x, uint32_t y) {
+	T_& Matrix<T_>::cell(int64_t x, int64_t y) {
+		return arr[modulu(x, (int64_t)width) + modulu(y, (int64_t)height) * width];
+	}
+
+
+	template <typename T_>
+	T_& Matrix<T_>::cell(uint32_t x, uint32_t y) {
 		return arr[modulu(x, width) + modulu(y, height) * width];
 	}
 
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell(std::pair<int,int> cords) {
-		return get_cell(cords.first,cords.second);
+	T_& Matrix<T_>::cell(std::pair<int, int> cords) {
+		return cell(cords.first, cords.second);
 	}
 
 	template <typename T_>
-	const T_ Matrix<T_>::get_cell(std::pair<uint32_t, uint32_t> cords) {
-		return get_cell(cords.first, cords.second);
-	}
-
-#ifdef TARA_PGE_EXTENSION
-	template <typename T_>
-	const T_ Matrix<T_>::get_cell (olc::vi2d cords) const {
-		return get_cell(cords.x, cords.y);
-	}
-
-	template <typename T_>
-	const T_ Matrix<T_>::get_cell (olc::vu2d cords) const {
-		return get_cell(cords.x, cords.y);
-	}
-
-	template <typename T_>
-	const olc::vu2d Matrix<T_>::get_dim() const {
-		return olc::vu2d(width, height);
-	}
-#endif // TARA_PGE_EXTENSION
-
-	template <typename T_>
-	void Matrix<T_>::set_cell(int i, T_ val) {
-		
-		arr[modulu((uint32_t)i, size)] = val;
-	}
-
-	template <typename T_>
-	void Matrix<T_>::set_cell(uint32_t i, T_ val) {
-		arr[modulu(i, size)] = val;
-	}
-
-	template <typename T_>
-	void Matrix<T_>::set_cell(int x, int y, T_ val) {
-		set_cell(x + y * width, val);
-	}
-
-	template <typename T_>
-	void Matrix<T_>::set_cell(uint32_t x, uint32_t y, T_ val) {
-		set_cell(x + y * width, val);
-	}
-
-	template <typename T_>
-	void Matrix<T_>::set_cell(std::pair<int,int> cords, T_ val) {
-		set_cell(cords.first, cords.second, val);
-	}
-
-	template <typename T_>
-	void Matrix<T_>::set_cell(std::pair<uint32_t, uint32_t> cords, T_ val) {
-		set_cell(cords.first, cords.second, val);
+	T_& Matrix<T_>::cell(std::pair<uint32_t, uint32_t> cords) {
+		return cell(cords.first, cords.second);
 	}
 
 #ifdef TARA_PGE_EXTENSION
 	template <typename T_>
-	void Matrix<T_>::set_cell(olc::vi2d cords, T_ val) {
-		set_cell(cords.x, cords.y, val);
+	T_& Matrix<T_>::cell(olc::vi2d cords) const {
+		return cell(cords.x, cords.y);
 	}
 
 	template <typename T_>
-	void Matrix<T_>::set_cell(olc::vu2d cords, T_ val) {
-		set_cell(cords.x, cords.y, val);
+	T_& Matrix<T_>::cell(olc::vu2d cords) const {
+		return cell(cords.x, cords.y);
 	}
+
 #endif // TARA_PGE_EXTENSION
+
 
 	template <typename T_>
 	void Matrix<T_>::set_arr(Matrix<T_>* m) {
