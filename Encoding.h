@@ -3,6 +3,8 @@
 #include "Headers.h"
 #include "MiscFuncs.h"
 
+class word32;
+
 namespace tara {
 #pragma region Crockfords Base32
 // only cpp17 and above support inline variables
@@ -92,22 +94,24 @@ namespace tara {
             }
         }
         return out;
-    } 
+    }
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
     std::string encoding32(size_t num) {
         if (num == 0) return "0";
 
         std::string out = "";
         while (num != 0) {
-            out.insert(0, std::string(1, encoder32.at(num % 32)));
+            out.insert(0, std::string(1, encoder32.at(num & 0x1F /*equiv to num % 32 */)));
 
-            //num = num >> 5;
-            num = num / 32;
+            num = num >> 5;
+            // equiv to num = num / 32;
         }
         return out;
 
     }
 
-    // a 8 character in 5 bit chars
+    // an 8 character string in 5 bit chars
     // every char is in base 32
     class word32 {
     protected:
@@ -119,6 +123,7 @@ namespace tara {
         uint8_t e, d, c, b, a;
 
         void ConstructByStr(std::string);
+
     public:
         void set_char(uint8_t val, uint8_t index);
     public:
@@ -144,6 +149,9 @@ namespace tara {
         friend word32 operator|(word32, word32);
         friend word32 operator&(word32, word32);
         friend word32 operator^(word32, word32);
+
+        friend word32 operator<<(word32, uint8_t);
+        friend word32 operator>>(word32, uint8_t);
 
         uint8_t operator[](uint8_t index) { return get_char(index); }
 
@@ -224,7 +232,7 @@ namespace tara {
             c = (c & 0xF0) | (val >> 1);
             return;
         case 4:
-            c = (c & 0xF) | (val << 4);
+            c = (c & 0x0F) | (val << 4);
             d = (d & 0xFE) | (val >> 4);
             return;
         case 5:
@@ -372,6 +380,45 @@ namespace tara {
             lhs.a ^ rhs.a
             );
     }
+
+    word32 operator<<(word32 lhs, uint8_t rhs) {
+        uint8_t
+            e_ = lhs.e,
+            d_ = lhs.d,
+            c_ = lhs.c,
+            b_ = lhs.b,
+            a_ = lhs.a;
+
+        for (uint8_t i = 0; i < rhs; i++) {
+            e_ = (e_ << 1) | (d_ >> 7);
+            d_ = (d_ << 1) | (c_ >> 7);
+            c_ = (c_ << 1) | (b_ >> 7);
+            b_ = (b_ << 1) | (a_ >> 7);
+            a_ = a_ << 1;
+        }
+
+        return word32(e_, d_, c_, b_, a_);
+    }
+
+    word32 operator>>(word32 lhs, uint8_t rhs) {
+        uint8_t
+            e_ = lhs.e,
+            d_ = lhs.d,
+            c_ = lhs.c,
+            b_ = lhs.b,
+            a_ = lhs.a;
+
+        for (uint8_t i = 0; i < rhs; i++) {
+            a_ = (a_ >> 1) | (b_ << 7);
+            b_ = (b_ >> 1) | (c_ << 7);
+            c_ = (c_ >> 1) | (d_ << 7);
+            d_ = (d_ >> 1) | (e_ << 7);
+            e_ = e_ >> 1;
+        }
+
+        return word32(e_, d_, c_, b_, a_);
+    }
+
 #pragma endregion
 #pragma endregion Crockfords Base32
 }
