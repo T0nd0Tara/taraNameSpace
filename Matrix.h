@@ -545,12 +545,12 @@ namespace tara {
 
 #ifdef TARA_PGE_EXTENSION
 	template <typename T_>
-	T_& Matrix<T_>::cell(olc::vi2d cords) const {
+	T_& Matrix<T_>::cell(olc::vi2d cords){
 		return cell(cords.x, cords.y);
 	}
 
 	template <typename T_>
-	T_& Matrix<T_>::cell(olc::vu2d cords) const {
+	T_& Matrix<T_>::cell(olc::vu2d cords){
 		return cell(cords.x, cords.y);
 	}
 
