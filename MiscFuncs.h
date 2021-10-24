@@ -51,7 +51,7 @@ inline T* dotProd(std::vector<T>* a, std::vector<T>* b, size_t size, T* out = nu
 	if (out == nullptr) _out = new T[size];
 	else _out = out;
 
-	for (size_t i = 0; i < size; i++) {
+	for (size_t i = 0U; i < size; i++) {
 		*_out = dotProd(a, b);
 		_out++;
 		a++;
@@ -61,7 +61,7 @@ inline T* dotProd(std::vector<T>* a, std::vector<T>* b, size_t size, T* out = nu
 
 template <typename T>
 inline void vecToArr(std::vector<T>* in, T* out) {
-	for (size_t i = 0; i < in->size(); i++) {
+	for (size_t i = 0U; i < in->size(); i++) {
 		out[i] = (*in)[i];
 	}
 }
@@ -74,11 +74,11 @@ inline std::string addSpace(size_t);
 template <typename T>
 inline std::string arrToString(T* in, size_t size) { // doesn't drop
 	std::string out = "{";
-	for (size_t i = 0; i < size; i++) {
+	for (size_t i = 0U; i < size; i++) {
 		out += std::to_string(*in);
 		in++;
 		if (i + 1 != size)
-			out += ',' + addSpace(11 - len(in[i + 1]));
+			out += ',' + addSpace(11U - len(in[i + 1]));
 	}
 	out += '}';
 	return out;
@@ -88,14 +88,14 @@ inline std::string arrToString(T* in, size_t size) { // doesn't drop
 template <typename T>
 inline std::string arrToString(T* in, size_t size, size_t drop) {
 	std::string out = "{ ";
-	for (size_t i = 0; i < size; i++) {
+	for (size_t i = 0U; i < size; i++) {
 		out += std::to_string(in[i]);
 
 		if (i + 1 != size) {
 			out += ',' + addSpace(11 - len(in[i + 1]));
 
 			if ((i + 1) % drop == 0)
-				out += "\n" + addSpace(10 - len(in[i + 1]));
+				out += "\n" + addSpace(10U - len(in[i + 1]));
 		}
 	}
 
@@ -108,10 +108,10 @@ inline std::string vecToString(std::vector<T>* in) {
 	std::string out = "{";
 
 	
-	for (size_t i = 0; i < in->size(); i++) {
+	for (size_t i = 0U; i < in->size(); i++) {
 		out += std::to_string((*in)[i]);
 		if (i + 1 != in->size())
-			out += ',' + addSpace(11 - len((*in)[i+1]));
+			out += ',' + addSpace(11U - len((*in)[i+1]));
 	}
 	out += '}';
 
@@ -120,13 +120,13 @@ inline std::string vecToString(std::vector<T>* in) {
 
 inline std::string addTabs(size_t n) {
 	std::string out = "";
-	for (size_t indT = 0; indT < n; indT++) out += '\t';
+	for (size_t indT = 0U; indT < n; indT++) out += '\t';
 	return out;
 }
 
 inline std::string addSpace(size_t n) {
 	std::string out = "";
-	for (size_t indT = 0; indT < n; indT++) out += ' ';
+	for (size_t indT = 0U; indT < n; indT++) out += ' ';
 	return out;
 }
 
@@ -139,16 +139,16 @@ inline void Transpose(float* io, size_t size, size_t new_line) {
 	T* temp_out = new T[size];
 
 	
-	for (size_t y = 0; y < size / new_line; y++) {
-		for (size_t x = 0; x < new_line; x++) {
+	for (size_t y = 0U; y < size / new_line; y++) {
+		for (size_t x = 0U; x < new_line; x++) {
 			temp_out[x + new_line * y] = io[y + new_line * x];
 		}
 	}
 
 
 	// puting back temp_out into io
-	for (size_t y = 0; y < size / new_line; y++) {
-		for (size_t x = 0; x < new_line; x++) {
+	for (size_t y = 0U; y < size / new_line; y++) {
+		for (size_t x = 0U; x < new_line; x++) {
 			io[x + y * new_line] = temp_out[x + y * new_line];
 		}
 	}
@@ -306,15 +306,15 @@ T modulu(T x, T m) {
 // The Chinese Remainder Theorem - returns a value in [0,..., m1 * m2 * ... * mn)
 // DISCLAIMER: DOES NOT CHECK IF MODS ARE PAIRWISE COPRIME
 uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){
-	size_t N = 1;
+	size_t N = 1U;
 
-    for (size_t i=0; i<equations; i++){
+    for (size_t i=0U; i<equations; i++){
         N *= mods[i];
     }
 
 	size_t* e = new size_t[equations];
 
-    for (size_t i=0; i<equations; i++){
+	for (size_t i = 0U; i < equations; i++) {
 		size_t temp = N / mods[i];
         e[i] = temp;
         while (e[i] % mods[i] != 1){
@@ -322,8 +322,8 @@ uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){
         }
     }
 
-	size_t x=0;
-    for (size_t i=0; i<equations; i++){
+	size_t x = 0U;
+	for (size_t i = 0U; i < equations; i++) {
         x += equives[i]*e[i];
     }
 
