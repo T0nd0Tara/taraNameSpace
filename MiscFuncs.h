@@ -17,10 +17,10 @@ std::string btos(bool b) {
 // integer power (doesn't uses doubles like pow)
 // return x^n
 // in this function 0^0 := 0
-int32_t powi(int32_t x, uint32_t n) {
+int powi(int x, size_t n) {
 	if (x == 0) return 0;
-	int32_t out = 1;
-	for (uint32_t i = 0; i < n; i++) {
+	int out = 1;
+	for (size_t i = 0; i < n; i++) {
 		out *= x;
 	}
 	return out;
@@ -35,7 +35,7 @@ inline T dotProd(std::vector<T>* a, std::vector<T>* b) {
 	}
 
 	T sum = (T)0;
-	for (uint32_t i = 0; i < (a->size()); i++)
+	for (size_t i = 0; i < (a->size()); i++)
 		sum += (*a)[i] * (*b)[i];
 
 	return sum;
@@ -46,12 +46,12 @@ inline T dotProd(std::vector<T>* a, std::vector<T>* b) {
 // if the 'out' parameter is defined, the output will be 'out'
 // and the array will be at that location
 template <typename T>
-inline T* dotProd(std::vector<T>* a, std::vector<T>* b, uint32_t size, T* out = nullptr) {
+inline T* dotProd(std::vector<T>* a, std::vector<T>* b, size_t size, T* out = nullptr) {
 	T* _out;
 	if (out == nullptr) _out = new T[size];
 	else _out = out;
 
-	for (uint32_t i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		*_out = dotProd(a, b);
 		_out++;
 		a++;
@@ -61,20 +61,20 @@ inline T* dotProd(std::vector<T>* a, std::vector<T>* b, uint32_t size, T* out = 
 
 template <typename T>
 inline void vecToArr(std::vector<T>* in, T* out) {
-	for (uint32_t i = 0; i < in->size(); i++) {
+	for (size_t i = 0; i < in->size(); i++) {
 		out[i] = (*in)[i];
 	}
 }
 
 template <typename T>
-inline int len(T);
+inline size_t len(T);
 
-inline std::string addSpace(uint32_t);
+inline std::string addSpace(size_t);
 
 template <typename T>
-inline std::string arrToString(T* in, uint32_t size) { // doesn't drop
+inline std::string arrToString(T* in, size_t size) { // doesn't drop
 	std::string out = "{";
-	for (uint32_t i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		out += std::to_string(*in);
 		in++;
 		if (i + 1 != size)
@@ -86,9 +86,9 @@ inline std::string arrToString(T* in, uint32_t size) { // doesn't drop
 
 
 template <typename T>
-inline std::string arrToString(T* in, uint32_t size, uint32_t drop) {
+inline std::string arrToString(T* in, size_t size, size_t drop) {
 	std::string out = "{ ";
-	for (uint32_t i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		out += std::to_string(in[i]);
 
 		if (i + 1 != size) {
@@ -108,7 +108,7 @@ inline std::string vecToString(std::vector<T>* in) {
 	std::string out = "{";
 
 	
-	for (uint32_t i = 0; i < in->size(); i++) {
+	for (size_t i = 0; i < in->size(); i++) {
 		out += std::to_string((*in)[i]);
 		if (i + 1 != in->size())
 			out += ',' + addSpace(11 - len((*in)[i+1]));
@@ -118,20 +118,20 @@ inline std::string vecToString(std::vector<T>* in) {
 	return out;
 }
 
-inline std::string addTabs(uint32_t n) {
-	std::string out;
-	for (uint32_t indT = 0; indT < n; indT++) out += '\t';
+inline std::string addTabs(size_t n) {
+	std::string out = "";
+	for (size_t indT = 0; indT < n; indT++) out += '\t';
 	return out;
 }
 
-inline std::string addSpace(uint32_t n) {
-	std::string out;
-	for (uint32_t indT = 0; indT < n; indT++) out += ' ';
+inline std::string addSpace(size_t n) {
+	std::string out = "";
+	for (size_t indT = 0; indT < n; indT++) out += ' ';
 	return out;
 }
 
 template <typename T>
-inline void Transpose(float* io, uint32_t size, uint32_t new_line) {
+inline void Transpose(float* io, size_t size, size_t new_line) {
 	if (size % new_line != 0) {
 		std::cout << "An error has occured in Transpose.\n";
 		return;
@@ -139,16 +139,16 @@ inline void Transpose(float* io, uint32_t size, uint32_t new_line) {
 	T* temp_out = new T[size];
 
 	
-	for (uint32_t y = 0; y < size / new_line; y++) {
-		for (uint32_t x = 0; x < new_line; x++) {
+	for (size_t y = 0; y < size / new_line; y++) {
+		for (size_t x = 0; x < new_line; x++) {
 			temp_out[x + new_line * y] = io[y + new_line * x];
 		}
 	}
 
 
 	// puting back temp_out into io
-	for (uint32_t y = 0; y < size / new_line; y++) {
-		for (uint32_t x = 0; x < new_line; x++) {
+	for (size_t y = 0; y < size / new_line; y++) {
+		for (size_t x = 0; x < new_line; x++) {
 			io[x + y * new_line] = temp_out[x + y * new_line];
 		}
 	}
@@ -158,7 +158,7 @@ inline void Transpose(float* io, uint32_t size, uint32_t new_line) {
 }
 
 template <typename T>
-inline uint32_t len(T in) {
+inline size_t len(T in) {
 	return std::to_string(in).length();
 }
 
@@ -175,8 +175,8 @@ inline float rand_1_1() {
 }
 
 // return a random array with each element v: -1<=v<=1
-inline void randArr(float* out, uint32_t size) { 
-	for (uint32_t i = 0; i < size; i++) {
+inline void randArr(float* out, size_t size) {
+	for (size_t i = 0; i < size; i++) {
 		out[i] = rand_1_1();
 	}
 }
@@ -192,10 +192,10 @@ inline std::pair<To, To> convert(const std::pair<From, From> p) {
 
 template<typename From, typename To>
 inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pair<To, To>>* out, uint32_t _array = 1) {
-	for (uint32_t arr = 0; arr < _array; arr++) {
+	for (size_t arr = 0; arr < _array; arr++) {
 		out->resize(in->size());
 
-		for (uint32_t i = 0; i < in->size(); i++)
+		for (size_t i = 0; i < in->size(); i++)
 			(*out)[i] = convert<To>((*in)[i]);
 
 		in++;
@@ -224,8 +224,8 @@ inline T max(olc::v2d_generic<T> vec) {
 
 // Checks if element is in an array
 template<typename T>
-bool is_in(T* arr, uint32_t arrSize, T elem) {
-	for (uint32_t i = 0U; i < arrSize; i++)
+bool is_in(T* arr, size_t arrSize, T elem) {
+	for (size_t i = 0U; i < arrSize; i++)
 		if (arr[i] == elem) return true;
 		
 	return false;
@@ -233,9 +233,9 @@ bool is_in(T* arr, uint32_t arrSize, T elem) {
 
 // Checks if element is in a vector
 template<typename T>
-bool is_in(std::vector<T> vec, T elem, uint32_t start = 0U, uint32_t end = 0U) {
+bool is_in(std::vector<T> vec, T elem, size_t start = 0U, size_t end = 0U) {
 	if (end == 0U) end = vec.size();
-	for (uint32_t i = start; i < end; i++) {
+	for (size_t i = start; i < end; i++) {
 		if (vec[i] == elem) return true;
 	}
 	return false;
@@ -243,8 +243,8 @@ bool is_in(std::vector<T> vec, T elem, uint32_t start = 0U, uint32_t end = 0U) {
 
 // Checks if element is in an array of vectors
 template<typename T>
-bool is_in(std::vector<T>* vec, uint32_t arrSize, T elem) {
-	for (uint32_t i=0U; i<arrSize; i++)
+bool is_in(std::vector<T>* vec, size_t arrSize, T elem) {
+	for (size_t i = 0U; i < arrSize; i++)
 		for (T test : vec[i]) {
 			if (test == elem) return true;
 		}
@@ -306,24 +306,24 @@ T modulu(T x, T m) {
 // The Chinese Remainder Theorem - returns a value in [0,..., m1 * m2 * ... * mn)
 // DISCLAIMER: DOES NOT CHECK IF MODS ARE PAIRWISE COPRIME
 uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations){
-    uint32_t N = 1;
+	size_t N = 1;
 
-    for (uint32_t i=0; i<equations; i++){
+    for (size_t i=0; i<equations; i++){
         N *= mods[i];
     }
 
-    uint32_t* e = new uint32_t[equations];
+	size_t* e = new size_t[equations];
 
-    for (uint32_t i=0; i<equations; i++){
-        uint32_t temp = N / mods[i];
+    for (size_t i=0; i<equations; i++){
+		size_t temp = N / mods[i];
         e[i] = temp;
         while (e[i] % mods[i] != 1){
             e[i] *= temp;
         }
     }
 
-    uint32_t x=0;
-    for (uint32_t i=0; i<equations; i++){
+	size_t x=0;
+    for (size_t i=0; i<equations; i++){
         x += equives[i]*e[i];
     }
 
