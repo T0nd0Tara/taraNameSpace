@@ -221,7 +221,7 @@ namespace tara {
                 + std::string(1, encoder32(get_char(1)))
                 + std::string(1, encoder32(get_char(0)));
         }
-        catch (std::exception& e) {
+        catch (std::out_of_range& e) {
             printError("Can't convert to string", &e);
         }
         return out;
