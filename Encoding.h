@@ -211,8 +211,7 @@ namespace tara {
     std::string word32::to_str() {
         std::string out = "";
         try {
-            out =
-                  std::string(1, encoder32(get_char(7)))
+            out = std::string(1, encoder32(get_char(7)))
                 + std::string(1, encoder32(get_char(6)))
                 + std::string(1, encoder32(get_char(5)))
                 + std::string(1, encoder32(get_char(4)))
