@@ -7,90 +7,14 @@ class word32;
 
 namespace tara {
 #pragma region Crockfords Base32
-// only cpp17 and above support inline variables
-#if __cplusplus >= 201703L
-    inline
-#endif
-    const std::map<char, uint32_t> decoder32 = {
-        {'0', 0}, {'O', 0}, {'o', 0},
-        {'1', 1}, {'I', 1}, {'i', 1}, {'L', 1}, {'l', 1},
-        {'2', 2},
-        {'3', 3},
-        {'4', 4},
-        {'5', 5},
-        {'6', 6},
-        {'7', 7},
-        {'8', 8},
-        {'9', 9},
-        {'A', 10}, {'a', 10},
-        {'B', 11}, {'b', 11},
-        {'C', 12}, {'c', 12},
-        {'D', 13}, {'d', 13},
-        {'E', 14}, {'e', 14},
-        {'F', 15}, {'f', 15},
-        {'G', 16}, {'g', 16},
-        {'H', 17}, {'h', 17},
-        {'J', 18}, {'j', 18},
-        {'K', 19}, {'k', 19},
-        {'M', 20}, {'m', 20},
-        {'N', 21}, {'n', 21},
-        {'P', 22}, {'p', 22},
-        {'Q', 23}, {'q', 23},
-        {'R', 24}, {'r', 24},
-        {'S', 25}, {'s', 25},
-        {'T', 26}, {'t', 26},
-        {'V', 27}, {'v', 27},
-        {'W', 28}, {'w', 28},
-        {'X', 29}, {'x', 29},
-        {'Y', 30}, {'y', 30},
-        {'Z', 31}, {'z', 31}
-    };
-
-#if __cplusplus >= 201703L
-    inline
-#endif
-    const std::map<uint8_t, char>  encoder32 = {
-        {0,  '0'},
-        {1,  '1'},
-        {2,  '2'},
-        {3,  '3'},
-        {4,  '4'},
-        {5,  '5'},
-        {6,  '6'},
-        {7,  '7'},
-        {8,  '8'},
-        {9,  '9'},
-        {10, 'A'},
-        {11, 'B'},
-        {12, 'C'},
-        {13, 'D'},
-        {14, 'E'},
-        {15, 'F'},
-        {16, 'G'},
-        {17, 'H'},
-        {18, 'J'},
-        {19, 'K'},
-        {20, 'M'},
-        {21, 'N'},
-        {22, 'P'},
-        {23, 'Q'},
-        {24, 'R'},
-        {25, 'S'},
-        {26, 'T'},
-        {27, 'V'},
-        {28, 'W'},
-        {29, 'X'},
-        {30, 'Y'},
-        {31, 'Z'},
-    };
 
     size_t decoding32(std::string str) {
         size_t out = 0;
         for (size_t i = 0; i < str.length(); i++) {
             try {
-                out += decoder32.at(str[i]) * powi(32, str.length() - i - 1);
+                out += (size_t)decoder32(str[i]) * powi(32, str.length() - i - 1);
             } catch(std::out_of_range& e) {
-                printError("A wrong character was inserted. '" + std::string(1 ,str[i]) + "' is not part of Crockford's Base32", &e);
+                printError("A wrong character was inserted. '" + std::string(1 ,str[i]) + "' is not part of Crockford's Base32");
             }
         }
         return out;
@@ -102,7 +26,7 @@ namespace tara {
 
         std::string out = "";
         while (num != 0) {
-            out.insert(0, std::string(1, encoder32.at(num & 0x1F /*equiv to num % 32 */)));
+            out.insert(0, std::string(1, encoder32(num & 0x1F /*equiv to num % 32 */)));
 
             num = num >> 5;
             // equiv to num = num / 32;
@@ -208,14 +132,14 @@ namespace tara {
         }
 
 
-        set_char(decoder32.at(in[0]), 7);
-        set_char(decoder32.at(in[1]), 6);
-        set_char(decoder32.at(in[2]), 5);
-        set_char(decoder32.at(in[3]), 4);
-        set_char(decoder32.at(in[4]), 3);
-        set_char(decoder32.at(in[5]), 2);
-        set_char(decoder32.at(in[6]), 1);
-        set_char(decoder32.at(in[7]), 0);
+        set_char(decoder32(in[0]), 7);
+        set_char(decoder32(in[1]), 6);
+        set_char(decoder32(in[2]), 5);
+        set_char(decoder32(in[3]), 4);
+        set_char(decoder32(in[4]), 3);
+        set_char(decoder32(in[5]), 2);
+        set_char(decoder32(in[6]), 1);
+        set_char(decoder32(in[7]), 0);
 
     }
 
@@ -288,14 +212,14 @@ namespace tara {
         std::string out = "";
         try {
             out =
-                  std::string(1, encoder32.at(get_char(7)))
-                + std::string(1, encoder32.at(get_char(6)))
-                + std::string(1, encoder32.at(get_char(5)))
-                + std::string(1, encoder32.at(get_char(4)))
-                + std::string(1, encoder32.at(get_char(3)))
-                + std::string(1, encoder32.at(get_char(2)))
-                + std::string(1, encoder32.at(get_char(1)))
-                + std::string(1, encoder32.at(get_char(0)));
+                  std::string(1, encoder32(get_char(7)))
+                + std::string(1, encoder32(get_char(6)))
+                + std::string(1, encoder32(get_char(5)))
+                + std::string(1, encoder32(get_char(4)))
+                + std::string(1, encoder32(get_char(3)))
+                + std::string(1, encoder32(get_char(2)))
+                + std::string(1, encoder32(get_char(1)))
+                + std::string(1, encoder32(get_char(0)));
         }
         catch (std::exception& e) {
             printError("Can't convert to string", &e);
