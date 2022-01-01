@@ -555,6 +555,12 @@ const char encoder32(uint8_t i){
 
 #pragma endregion encoding32
 
+template<typename T>
+void printVec(std::vector<T>& vec, std::string sep = ", ") {
+	for (size_t i = 0; i < vec.size() - 1; i++)
+		std::cout << vec[i] << sep;
+	std::cout << vec.back();
+}
 void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, bool printInCout = false) {
 	std::string print = description;
 	if (error != nullptr) print += ": " + std::string(typeid(*error).name());

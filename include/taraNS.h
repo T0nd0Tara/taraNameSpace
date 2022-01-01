@@ -59,7 +59,11 @@ Updates:
  */
 
 #pragma once
+#ifndef TARA_NS_APPLICATION
+#define TARA_NS_APPLICATION
 #include "..\Polynomial.h"
 #include "..\Matrix.h"
 #include "..\Bools.h"
 #include "..\Encoding.h"
+
+#endif // TARA_NS_APPLICATION
