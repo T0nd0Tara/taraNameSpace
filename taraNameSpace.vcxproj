@@ -157,14 +157,6 @@
     <ClInclude Include="word32.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Bools.cpp" />
-    <ClCompile Include="Encoding.cpp" />
-    <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="MiscFuncs.cpp" />
-    <ClCompile Include="Polynomial.cpp" />
-    <ClCompile Include="word32.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include=".gitignore" />
     <None Include="CppProperties.json" />
   </ItemGroup>

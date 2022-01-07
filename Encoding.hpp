@@ -6,17 +6,6 @@
 
 
 namespace tara {
-#pragma region Crockfords Base32
-
-    size_t decoding32(std::string str);
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-    std::string encoding32(size_t num);
-
-   
-
-#pragma endregion Crockfords Base32
-
 #pragma region encryption
 
     namespace sbox {
@@ -61,7 +50,7 @@ namespace tara {
             }
 
             void* deconv(void* data) const override {
-                printError("FETAL ERROR: DES S5 is not 'one to one' function - therefore it doesn't have a deconv.");
+                mf::printError("FETAL ERROR: DES S5 is not 'one to one' function - therefore it doesn't have a deconv.");
                 return nullptr;
             }
         };
@@ -126,10 +115,5 @@ namespace tara {
         };
     };
 
-
-    // AES - encryption
-    // Uses 16 byte of data and 128 bit key (so 10 rounds)
-    void* AES_en(void* data, void* key, sbox::s_box* sbox);
-    void* AES_de(void* data, void* key, sbox::s_box* sbox);
 #pragma endregion encryption
 }
