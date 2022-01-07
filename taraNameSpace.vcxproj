@@ -152,7 +152,7 @@
     <ClInclude Include="Headers.hpp" />
     <ClInclude Include="include\taraNS.hpp" />
     <ClInclude Include="Matrix.hpp" />
-    <ClInclude Include="MiscFuncs.hpp" />
+    <ClInclude Include="mf.hpp" />
     <ClInclude Include="Polynomial.hpp" />
     <ClInclude Include="word32.hpp" />
   </ItemGroup>

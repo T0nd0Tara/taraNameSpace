@@ -30,7 +30,7 @@
     <ClInclude Include="Matrix.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MiscFuncs.hpp">
+    <ClInclude Include="mf.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Polynomial.hpp">

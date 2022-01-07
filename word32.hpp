@@ -1,8 +1,6 @@
 #pragma once
 #include "Headers.hpp"
-#include "MiscFuncs.hpp"
-#include "Encoding.hpp"
-
+#include "mf.hpp"
 
 namespace tara {
 	// an 8 character string in 5 bit chars

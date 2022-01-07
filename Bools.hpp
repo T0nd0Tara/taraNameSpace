@@ -1,6 +1,6 @@
 #pragma once
 #include "Headers.hpp"
-#include "MiscFuncs.hpp"
+#include "mf.hpp"
 
 // This class is a way to utilize all of your memory with booleans
 // 
