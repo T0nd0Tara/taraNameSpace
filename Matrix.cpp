@@ -338,19 +338,19 @@ std::vector<T_>* Matrix<T_>::get_colVec(uint32_t ind) {
 
 template <typename T_>
 T_& Matrix<T_>::cell(int64_t i) {
-	return arr[modulu(i, (int64_t)size)];
+	return arr[modulo(i, (int64_t)size)];
 }
 
 
 template <typename T_>
 T_& Matrix<T_>::cell(int64_t x, int64_t y) {
-	return arr[modulu(x, (int64_t)width) + modulu(y, (int64_t)height) * width];
+	return arr[modulo(x, (int64_t)width) + modulo(y, (int64_t)height) * width];
 }
 
 
 template <typename T_>
 T_& Matrix<T_>::cell(uint32_t x, uint32_t y) {
-	return arr[modulu(x, width) + modulu(y, height) * width];
+	return arr[modulo(x, width) + modulo(y, height) * width];
 }
 
 template <typename T_>

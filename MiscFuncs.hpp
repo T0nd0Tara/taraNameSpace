@@ -91,10 +91,10 @@ inline void randArr(float* out, size_t size) {
 
 #pragma region convert
 template<typename To, typename From>
-inline std::pair<To, To> convert(const std::pair<From, From> p);
+std::pair<To, To> convert(const std::pair<From, From> p);
 
 template<typename From, typename To>
-inline void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pair<To, To>>* out, uint32_t _array = 1);
+void convert(std::vector<std::pair<From, From>>* in, std::vector<std::pair<To, To>>* out, uint32_t _array = 1);
 
 #pragma endregion convert
 
@@ -116,15 +116,15 @@ inline T max(olc::v2d_generic<T> vec) {
 
 // Checks if element is in an array
 template<typename T>
-bool is_in(T* arr, size_t arrSize, T elem);
+extern bool is_in(T* arr, size_t arrSize, T elem);
 
 // Checks if element is in a vector
 template<typename T>
-bool is_in(std::vector<T> vec, T elem, size_t start = 0U, size_t end = 0U);
+extern bool is_in(std::vector<T> vec, T elem, size_t start = 0U, size_t end = 0U);
 
 // Checks if element is in an array of vectors
 template<typename T>
-bool is_in(std::vector<T>* vec, size_t arrSize, T elem);
+extern bool is_in(std::vector<T>* vec, size_t arrSize, T elem);
 #pragma endregion is_in
 
 #pragma region Python_Funcs
@@ -143,11 +143,11 @@ void pySplit(std::vector<std::string>& IOvec, std::string str, std::string sep);
 
 #pragma region Number_Theory
 
-// real modulu (not like %) - also work for negative numbers
+// real modulo (not like %) - also work for negative numbers
 // works with floats and doubles
-// returns y = x(mod m) where y in {0,..., m-1}
+// returns y = x (mod m) where y in {0,..., m-1}
 template<typename T>
-T modulu(T x, T m);
+T modulo(T x, T m);
 
 // The Chinese Remainder Theorem - returns a value in [0,..., m1 * m2 * ... * mn)
 // DISCLAIMER: DOES NOT CHECK IF MODS ARE PAIRWISE COPRIME

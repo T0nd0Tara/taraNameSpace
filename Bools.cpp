@@ -16,11 +16,11 @@ namespace tara {
     // ==========================Methods===========================
 #pragma region Methods
     bool Bools::get_val(int index) {
-        return (data >> modulu(index, 8)) & 1;
+        return (data >> modulo(index, 8)) & 1;
     }
 
     void Bools::inv_val(int index) {
-        data ^= 1 << modulu(index, 8);
+        data ^= 1 << modulo(index, 8);
     }
 
     void Bools::set_val(int index, bool val) {

@@ -2,90 +2,18 @@
 
 #include "Headers.hpp"
 #include "MiscFuncs.hpp"
+#include "word32.hpp"
 
-class word32;
 
 namespace tara {
 #pragma region Crockfords Base32
 
-    size_t decoding32(std::string str) {
-        size_t out = 0;
-        for (size_t i = 0; i < str.length(); i++) {
-            try {
-                out += (size_t)decoder32(str[i]) * powi(32, str.length() - i - 1);
-            } catch(std::out_of_range& e) {
-                printError("A wrong character was inserted. '" + std::string(1 ,str[i]) + "' is not part of Crockford's Base32");
-            }
-        }
-        return out;
-    }
+    size_t decoding32(std::string str);
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-    std::string encoding32(size_t num) {
-        if (num == 0) return "0";
+    std::string encoding32(size_t num);
 
-        std::string out = "";
-        while (num != 0) {
-            out.insert(0, std::string(1, encoder32(num & 0x1F /*equiv to num % 32 */)));
-
-            num = num >> 5;
-            // equiv to num = num / 32;
-        }
-        return out;
-
-    }
-
-    // an 8 character string in 5 bit chars
-    // every char is in base 32
-    class word32 {
-    protected:
-        /*
-        cell          :    7           6              5            4           3             2             1           0
-        representation:_ _ _ _ _ | _ _ _ ~ _ _ | _ _ _ _ _ | _ ~ _ _ _ _ | _ _ _ _ ~ _ | _ _ _ _ _ | _ _ ~ _ _ _ | _ _ _ _ _
-        container     :e---------------e   d-----------------d   c---------------c   b-----------------b   a---------------a
-        */
-        uint8_t e, d, c, b, a;
-
-        void ConstructByStr(std::string);
-
-    public:
-        void set_char(uint8_t val, uint8_t index);
-    public:
-        word32();
-        word32(const word32&);
-        word32(uint8_t e, uint8_t d, uint8_t c, uint8_t b, uint8_t a);
-        word32(std::string in);
-        word32(uint64_t in);
-
-        uint8_t get_char(uint8_t index);
-
-        std::string to_str();
-        const char* c_str();
-        uint64_t data();
-
-        word32& operator=(word32&);
-        word32& operator=(std::string);
-        word32& operator=(size_t);
-
-        word32  operator|(uint64_t);
-        word32  operator&(uint64_t);
-        word32  operator^(uint64_t);
-
-        friend word32 operator|(word32, word32);
-        friend word32 operator&(word32, word32);
-        friend word32 operator^(word32, word32);
-
-        friend word32 operator<<(word32, uint8_t);
-        friend word32 operator>>(word32, uint8_t);
-
-        uint8_t operator[](uint8_t index) { return get_char(index); }
-
-        friend std::ostream& operator<<(std::ostream& out, word32 a) {
-            out << a.to_str();
-            return out;
-        }
-
-    };
+   
 
 #pragma endregion Crockfords Base32
 
@@ -201,57 +129,7 @@ namespace tara {
 
     // AES - encryption
     // Uses 16 byte of data and 128 bit key (so 10 rounds)
-    void* AES_en(void* data, void* key, sbox::s_box* sbox) {
-        printError("this function has not been implemented yet...", nullptr, true, true);
-        assert(sbox->in_bits == sbox->out_bits &&
-            sbox->in_bits == 8);
-
-        // ------------ initializing ------------
-
-        uint8_t* uData = (uint8_t*)data;
-
-        uint8_t** rows_a = new uint8_t * [4];
-        uint8_t** rows_b = new uint8_t * [4];
-        for (uint8_t i = 0; i < 4; i++) {
-            rows_a[i] = new uint8_t[4];
-            rows_b[i] = new uint8_t[4];
-        }
-
-        for (uint8_t i = 0; i < 16; i++) {
-            //    [i>> 2][i & 3]
-            rows_a[i / 4][i % 4] = *uData;
-            rows_b[i / 4][i % 4] = *(uint8_t*)sbox->conv(uData++);
-        }
-
-        // ------------ rotating ------------
-        {
-            auto ROTL4 = [](uint8_t* arr, uint8_t i) {
-                for (uint8_t j = 0; j < i; j++) {
-                    uint8_t temp = arr[0];
-                    arr[0] = arr[1];
-                    arr[1] = arr[2];
-                    arr[2] = arr[3];
-                    arr[3] = temp;
-                }
-            };
-            for (uint8_t i = 0; i < 4; i++) ROTL4(rows_a[i], i);
-        }
-
-        // TODO
-        // Mixing columns
-        // Adding round key
-
-        // ------------ Garbage Collection------------
-        for (uint8_t i = 0; i < 4; i++)
-            delete[] rows_a[i], rows_b[i];
-        
-        delete[] rows_a, rows_b;
-
-        return nullptr;
-    }
-    void* AES_de(void* data, void* key, sbox::s_box* sbox) {
-        printError("this function has not been implemented yet...", nullptr, true, true);
-        return nullptr;
-    }
+    void* AES_en(void* data, void* key, sbox::s_box* sbox);
+    void* AES_de(void* data, void* key, sbox::s_box* sbox);
 #pragma endregion encryption
 }

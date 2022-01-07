@@ -1,5 +1,5 @@
 #include "MiscFuncs.hpp"
-namespace tara {
+
 	int powi(int x, size_t n) {
 		if (x == 0) return 0;
 		int out = 1;
@@ -155,7 +155,7 @@ namespace tara {
 
 
 	template<typename T>
-	bool is_in(std::vector<T> vec, T elem, size_t start = 0U, size_t end = 0U) {
+	bool is_in(std::vector<T> vec, T elem, size_t start, size_t end) {
 		if (end == 0U) end = vec.size();
 		for (size_t i = start; i < end; i++) {
 			if (vec[i] == elem) return true;
@@ -208,7 +208,7 @@ namespace tara {
 
 #pragma region Number_Theory
 	template<typename T>
-	T modulu(T x, T m) {
+	T modulo(T x, T m) {
 		if (x >= m)
 			do {
 				x -= m;
@@ -219,7 +219,7 @@ namespace tara {
 				x += m;
 			} while (x < T(0));
 
-			return x;
+		return x;
 	}
 
 	uint32_t chinese(uint32_t* equives, uint32_t* mods, uint32_t equations) {
@@ -486,4 +486,3 @@ namespace tara {
 
 		if (abortProgram) abort();
 	}
-}
