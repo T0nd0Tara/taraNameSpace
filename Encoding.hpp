@@ -5,7 +5,6 @@
 
 
 namespace tara {
-#pragma region encryption
 
     namespace sbox {
         class s_box {
@@ -171,5 +170,4 @@ namespace tara {
             return nullptr;
         }
     };
-#pragma endregion encryption
 }
