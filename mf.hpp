@@ -3,6 +3,16 @@
 #include "Headers.hpp"
 
 namespace tara{
+	enum class TextColor : uint8_t {
+		DEFAULT = 0,
+		FG_RED = 31,
+		FG_GREEN = 32,
+		FG_BLUE = 34,
+		BG_RED = 41,
+		BG_GREEN = 42,
+		BG_BLUE = 44,
+	};
+
 	// MiscFuncs
 	class mf {
 	public:
@@ -569,12 +579,12 @@ namespace tara{
 				os << vec[i] << sep;
 			os << vec.back();
 		}
-		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, std::ostream& os = std::cerr) {
+		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, std::ostream& os = std::cerr, TextColor col = TextColor::DEFAULT) {
 			std::string print = description;
 			if (error != nullptr) print += ": " + std::string(typeid(*error).name());
-
+			if ((uint8_t)col) os << "\033[" + std::to_string((uint8_t)col) + "m";
 			os << print << '\n';
-
+			if ((uint8_t)col) os << "\033[0m";
 			if (abortProgram) abort();
 		}
 
