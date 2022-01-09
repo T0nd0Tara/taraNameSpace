@@ -127,7 +127,11 @@ namespace tara {
 			return out;
 		}
 
-		const char* c_str() { return to_str().c_str(); }
+		const char* c_str() { 
+			std::string s = to_str();
+			const char* out = s.c_str();
+			return out;
+		}
 		uint64_t data() {
 			return (
 				((uint64_t)e << 32) |
