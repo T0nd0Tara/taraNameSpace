@@ -3,7 +3,7 @@
 #include "..\..\Headers.hpp"
 
 namespace tara{
-	enum class TextColor : uint8_t {
+	enum class text_color : uint8_t {
 		DEFAULT = 0,
 		FG_RED = 31,
 		FG_GREEN = 32,
@@ -577,7 +577,7 @@ namespace tara{
 				os << vec[i] << sep;
 			os << vec.back();
 		}
-		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, std::ostream& os = std::cerr, TextColor col = TextColor::DEFAULT) {
+		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, std::ostream& os = std::cerr, text_color col = text_color::DEFAULT) {
 			std::string print = description;
 			if (error != nullptr) print += ": " + std::string(typeid(*error).name());
 			if ((uint8_t)col) os << "\033[" + std::to_string((uint8_t)col) + "m";
