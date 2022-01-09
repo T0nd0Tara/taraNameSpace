@@ -149,7 +149,7 @@
   <ItemGroup>
     <ClInclude Include="include\taraNS\Bools.hpp" />
     <ClInclude Include="include\taraNS\Encoding.hpp" />
-    <ClInclude Include="include\taraNS\Headers.hpp" />
+    <ClInclude Include="Headers.hpp" />
     <ClInclude Include="include\taraNS.hpp" />
     <ClInclude Include="include\taraNS\Matrix.hpp" />
     <ClInclude Include="include\taraNS\mf.hpp" />

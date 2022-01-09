@@ -24,7 +24,7 @@
     <ClInclude Include="include\taraNS\Encoding.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\taraNS\Headers.hpp">
+    <ClInclude Include="Headers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\taraNS\Matrix.hpp">
