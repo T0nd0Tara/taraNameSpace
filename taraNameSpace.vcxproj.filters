@@ -15,25 +15,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="word32.hpp">
+    <ClInclude Include="include\taraNS\word32.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bools.hpp">
+    <ClInclude Include="include\taraNS\Bools.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Encoding.hpp">
+    <ClInclude Include="include\taraNS\Encoding.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers.hpp">
+    <ClInclude Include="include\taraNS\Headers.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.hpp">
+    <ClInclude Include="include\taraNS\Matrix.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mf.hpp">
+    <ClInclude Include="include\taraNS\mf.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Polynomial.hpp">
+    <ClInclude Include="include\taraNS\Polynomial.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\taraNS.hpp">

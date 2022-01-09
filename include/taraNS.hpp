@@ -60,7 +60,7 @@ Updates:
 
 #pragma once
 //#include "..\MiscFuncs.hpp"
-#include "..\Polynomial.hpp"
-#include "..\Matrix.hpp"
-#include "..\Bools.hpp"
-#include "..\Encoding.hpp"
+#include "taraNS\Polynomial.hpp"
+#include "taraNS\Matrix.hpp"
+#include "taraNS\Bools.hpp"
+#include "taraNS\Encoding.hpp"
