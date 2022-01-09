@@ -260,7 +260,7 @@ namespace tara {
 		}
 
 		Polynomial& operator=(Polynomial rhs) {
-			delete[] coeffs;
+			this->~Polynomial();
 
 			deg = rhs.deg;
 			coeffs = new int32_t[deg + 1]();
@@ -272,10 +272,12 @@ namespace tara {
 
 #ifndef TARA_NO_BOOST
 		Polynomial& operator=(std::string rhs) {
+			this->~Polynomial();
 			ConstructByStr(rhs);
 			return *this;
 		}
 		Polynomial& operator=(const char* rhs) {
+			this->~Polynomial();
 			ConstructByStr(std::string(rhs));
 			return *this;
 		}
