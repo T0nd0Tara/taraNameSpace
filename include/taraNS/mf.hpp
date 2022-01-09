@@ -64,9 +64,7 @@ namespace tara{
 			else _out = out;
 
 			for (size_t i = 0U; i < size; i++) {
-				*_out = dotProd(a, b);
-				_out++;
-				a++;
+				_out[i] = dotProd(a[i], b[i]);
 			}
 			return _out;
 		}
