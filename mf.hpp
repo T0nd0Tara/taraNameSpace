@@ -564,17 +564,16 @@ namespace tara{
 
 
 		template<typename T>
-		static void printVec(std::vector<T>& vec, std::string sep = ", "){
+		static void printVec(std::vector<T>& vec, std::string sep = ", ", std::ostream& os = std::cout){
 			for (size_t i = 0; i < vec.size() - 1; i++)
-				std::cout << vec[i] << sep;
-			std::cout << vec.back();
+				os << vec[i] << sep;
+			os << vec.back();
 		}
-		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, bool printInCout = false) {
+		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, std::ostream& os = std::cerr) {
 			std::string print = description;
 			if (error != nullptr) print += ": " + std::string(typeid(*error).name());
 
-			if (printInCout) std::cout << print << '\n';
-			else			 std::cerr << print << '\n';
+			os << print << '\n';
 
 			if (abortProgram) abort();
 		}

@@ -118,7 +118,7 @@ namespace tara {
         // AES - encryption
         // Uses 16 byte of data and 128 bit key (so 10 rounds)
         static void* AES_en(void* data, void* key, sbox::s_box* sbox) {
-            mf::printError("this function has not been implemented yet...", nullptr, true, true);
+            mf::printError("this function has not been implemented yet...", nullptr, true);
             assert(sbox->in_bits == sbox->out_bits &&
                 sbox->in_bits == 8);
 
@@ -166,7 +166,7 @@ namespace tara {
             return nullptr;
         }
         static void* AES_de(void* data, void* key, sbox::s_box* sbox) {
-            mf::printError("this function has not been implemented yet...", nullptr, true, true);
+            mf::printError("this function has not been implemented yet...", nullptr, true);
             return nullptr;
         }
     };
