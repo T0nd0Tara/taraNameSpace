@@ -495,8 +495,8 @@ namespace tara {
 		template <typename T__>
 		friend Matrix<T__> operator+(T__ b, Matrix<T__> a) { return a + b; }
 
-		template <typename T_>
-		bool is1x1(Matrix<T_>);
+		template <typename T__>
+		bool is1x1(Matrix<T__>);
 
 		template <typename T__>
 		friend Matrix<T__> operator+(Matrix<T__> a, Matrix<T__> b) {
