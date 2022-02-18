@@ -495,8 +495,10 @@ namespace tara {
 		template <typename T__>
 		friend Matrix<T__> operator+(T__ b, Matrix<T__> a) { return a + b; }
 
-		template <typename T__>
-		bool is1x1(Matrix<T__>);
+		template<typename T__>
+		friend bool is1x1(tara::Matrix<T__> a) {
+			return (a.get_width() == 1 && a.get_height() == 1);
+		}
 
 		template <typename T__>
 		friend Matrix<T__> operator+(Matrix<T__> a, Matrix<T__> b) {
@@ -613,8 +615,3 @@ namespace tara {
 	typedef Matrix<float> Matrixf;
 
 } // TARA NAMESPACE
-
-template<typename T>
-bool is1x1(tara::Matrix<T> a) {
-	return (a.get_width() == 1 && a.get_height() == 1);
-}
