@@ -82,15 +82,27 @@ namespace tara{
 			return out;
 		}
 
-		static inline std::string addSpace(size_t n) {
+		static std::string addSpace(size_t n) {
 			std::string out = "";
-			for (size_t indT = 0U; indT < n; indT++) out += ' ';
+			for (size_t indT = 0U; indT < n; indT++) out += " ";
 			return out;
 		}
 
 		template <typename T>
 		static inline size_t len(T in) {
 			return std::to_string(in).length();
+		}
+
+		// For len_ = 4:
+		// From 35 to 0035
+		// From -42 to -042
+		static std::string sameLen(int num, size_t len_) {
+			if (len_ < len(num)) return std::to_string(num);
+			std::string out = "";
+			for (size_t i = 0; i < len_ - len(num); i++) out += "0";
+			
+			out += std::to_string(std::abs(num));
+			return ((num < 0) ? "-" : "") + out;
 		}
 
 
@@ -577,7 +589,9 @@ namespace tara{
 				os << vec[i] << sep;
 			os << vec.back();
 		}
-		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true, std::ostream& os = std::cerr, text_color col = text_color::DEFAULT) {
+		static void printError(std::string description, std::exception* error = nullptr, bool abortProgram = true,
+			std::ostream& os = std::cerr, text_color col = text_color::DEFAULT)
+		{
 			std::string print = description;
 			if (error != nullptr) print += ": " + std::string(typeid(*error).name());
 			if ((uint8_t)col) os << "\033[" + std::to_string((uint8_t)col) + "m";
